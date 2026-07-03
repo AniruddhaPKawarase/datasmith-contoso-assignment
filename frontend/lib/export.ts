@@ -66,7 +66,7 @@ export function schemaHint(rawError: string): string | null {
     return "Hint: the composer used a table alias without declaring it. This is a gpt-4o-mini flake — one retry usually fixes it (or upgrade to a larger backbone).";
   }
   if (err.includes("empty sql produced by composer")) {
-    return "Hint: composer bailed after 2 attempts. This query pattern (multi-fact UNION) is a known limit of gpt-4o-mini — see test_case_matrix.md.";
+    return "Hint: composer bailed after 2 attempts on this phrasing. Common causes on the small gpt-4o-mini backbone: quarter-scoped filters (\"this quarter\") or multi-fact UNIONs. Try being explicit (e.g. \"in 2009\" or \"in Q4 2009\") or removing the date filter.";
   }
   if (err.includes("connection timeout")) {
     return "Hint: the Postgres container may be paused. Check `docker ps` and start scm-postgres if needed.";

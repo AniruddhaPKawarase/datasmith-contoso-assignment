@@ -23,13 +23,26 @@
   sql: |-
     SELECT
       dc.customerkey,
-      COALESCE(dc.companyname, dc.firstname || ' ' || dc.lastname) AS customer,
-      COUNT(DISTINCT fos.salesordernumber) AS orders,
+      dc.firstname || ' ' || dc.lastname AS customer,
       SUM(fos.salesamount) AS total_spend
     FROM factonlinesales fos
     JOIN dimcustomer dc ON dc.customerkey = fos.customerkey
-    GROUP BY dc.customerkey, dc.companyname, dc.firstname, dc.lastname
+    GROUP BY dc.customerkey, dc.firstname, dc.lastname
     ORDER BY total_spend DESC
+    LIMIT 10;
+
+- query: Show top 10 customers by revenue in Q4 2009.
+  sql: |-
+    SELECT
+      dc.customerkey,
+      dc.firstname || ' ' || dc.lastname AS customer,
+      SUM(fos.salesamount) AS revenue
+    FROM factonlinesales fos
+    JOIN dimdate dd ON dd.datekey = fos.datekey
+    JOIN dimcustomer dc ON dc.customerkey = fos.customerkey
+    WHERE dd.calendaryear = 2009 AND dd.calendarquarterlabel = 'Q4'
+    GROUP BY dc.customerkey, dc.firstname, dc.lastname
+    ORDER BY revenue DESC
     LIMIT 10;
 
 - query: Compare internet vs reseller channel sales by product category.
@@ -68,7 +81,7 @@
     JOIN dimproduct dp ON dp.productkey = fos.productkey
     JOIN dimproductsubcategory dps ON dps.productsubcategorykey = dp.productsubcategorykey
     JOIN dimproductcategory dpc ON dpc.productcategorykey = dps.productcategorykey
-    WHERE dd.calendaryear >= EXTRACT(YEAR FROM CURRENT_DATE)::int - 3
+    WHERE dd.calendaryear BETWEEN 2007 AND 2009
     GROUP BY dd.calendaryear, dpc.productcategoryname
     ORDER BY dpc.productcategoryname, dd.calendaryear;
 
@@ -109,6 +122,6 @@
     FROM dimcustomer dc
     JOIN dimgeography dg ON dg.geographykey = dc.geographykey
     JOIN dimsalesterritory dst ON dst.geographykey = dg.geographykey
-    WHERE dst.salesterritoryregion = 'Pacific'
+    WHERE dst.salesterritorygroup = 'Asia'   -- "Pacific"/"APAC" in NL maps to salesterritorygroup 'Asia'
     GROUP BY dc.gender, dc.yearlyincome, dc.education, dc.maritalstatus
     ORDER BY customer_count DESC;
