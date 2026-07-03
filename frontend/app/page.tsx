@@ -87,7 +87,7 @@ export default function Page() {
             </p>
           </div>
           <span className="rounded-full border border-emerald-700 bg-emerald-900/30 px-2.5 py-1 text-[10px] font-medium text-emerald-300">
-            claude-haiku-4-5
+            gpt-4o-mini
           </span>
         </header>
 

@@ -48,7 +48,7 @@ export function Sidebar({ turns, onNewSession, activeTurnId, onSelectTurn }: Pro
       </div>
       <footer className="border-t border-zinc-800 p-3 text-[10px] text-zinc-600">
         <p>SCM NL-to-SQL</p>
-        <p>claude-haiku-4-5 · v0.9</p>
+        <p>gpt-4o-mini · v0.9</p>
       </footer>
     </aside>
   );
