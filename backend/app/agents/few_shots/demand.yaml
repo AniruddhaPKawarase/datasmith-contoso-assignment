@@ -72,10 +72,13 @@
 
 - query: What is the average order value trend over the last 3 years by product line?
   sql: |-
+    -- NOTE: NULLIF(...)::float cast — CockroachDB rejects <float>/<int>.
     SELECT
       dd.calendaryear AS year,
       dpc.productcategoryname AS product_line,
-      SUM(fos.salesamount) / NULLIF(COUNT(DISTINCT fos.salesordernumber), 0) AS avg_order_value
+      SUM(fos.salesamount)
+        / NULLIF(COUNT(DISTINCT fos.salesordernumber), 0)::float
+        AS avg_order_value
     FROM factonlinesales fos
     JOIN dimdate dd ON dd.datekey = fos.datekey
     JOIN dimproduct dp ON dp.productkey = fos.productkey
