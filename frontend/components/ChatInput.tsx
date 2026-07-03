@@ -12,7 +12,7 @@ const SAMPLE_QUERIES = [
   "Show monthly revenue for 2009 by region",
   "Who are our top 10 customers by lifetime value?",
   "Show revenue by product category for 2009",
-  "Show me a sales funnel: orders → shipped → revenue by territory",
+  "Show revenue by territory group for 2009",
 ];
 
 export function ChatInput({ onSend, disabled }: Props) {
