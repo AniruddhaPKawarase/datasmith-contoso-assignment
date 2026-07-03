@@ -85,6 +85,21 @@ domains:
            factsalesquota to factsales on
            `(storekey, productkey, datekey)` after aggregating both
            sides to the quota grain.
+       10. STORE -> TERRITORY join: `dimsalesterritory` has NO
+           `storekey`. Stores link to territories through geography:
+             factsales fs
+             JOIN dimstore ds ON ds.storekey = fs.storekey
+             JOIN dimgeography dg ON dg.geographykey = ds.geographykey
+             JOIN dimsalesterritory dst ON dst.geographykey = dg.geographykey
+           NEVER write `dst.storekey = ...` — that column does not exist.
+           The alternative direct link is `dst.employeekey` (the
+           territory manager), NOT storekey.
+       11. DIVISION TYPING (Postgres → CockroachDB): raw integer/integer
+           division may raise `unsupported binary operator: <float> /
+           <int>`. Always cast the divisor to numeric:
+             `SUM(salesamount) / NULLIF(COUNT(DISTINCT x), 0)::float`
+           or `1.0 * SUM(a) / NULLIF(SUM(b), 0)`. For AOV / averages /
+           ratios, always cast.
     primary:
       - factonlinesales
       - factsales
