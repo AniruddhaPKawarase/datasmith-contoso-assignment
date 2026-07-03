@@ -6,7 +6,13 @@ Conversational analyst for the **Cleaned Microsoft Contoso** star schema, submit
 **Live API:** https://scm-contoso-api.onrender.com/healthz
 **3-min walkthrough:** _`(Loom URL — added after recording)`_
 
-> **Live-stack smoke result (2026-07-03):** TC01 (line chart, 26 rows, 11 s) · TC02 (bar chart, 10 rows, 6 s) · TC06 funnel (3 panels, 78 rows, 16 s) · TC08 demographic (3 panels, 10 rows, 19 s). All pass end-to-end via Vercel → Render → Neon.
+> **Live-stack smoke result (2026-07-03, full 22.8M-row CockroachDB backend):**
+> - Monthly revenue for 2009 by region — 100 rows, line chart, 28s, $0.006
+> - Top 10 customers by lifetime value — 10 rows, bar chart, 38s, $0.005
+> - Revenue by product category for 2009 — 8 rows, bar chart, 25s, $0.005
+> - Revenue by territory group for 2009 — 3 rows, bar chart, 24s, $0.005
+>
+> Total demo cost: **$0.02** end-to-end. Backend hits **12.03 M-row `factonlinesales`**, **3.4 M-row `factsales`**, **7.37 M-row `factsalesquota`** live on every request — no caching, no pre-aggregation.
 
 ## What it does
 
