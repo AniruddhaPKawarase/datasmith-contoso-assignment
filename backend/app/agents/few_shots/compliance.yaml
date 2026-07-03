@@ -1,0 +1,24 @@
+# Few-shot examples for Compliance — kept for completeness but the agent
+# itself does NOT do free-form SQL generation. Compliance runs as a post-
+# composition processor (see app/agents/compliance.py) that injects
+# row-level-security WHERE predicates into the composed SQL.
+#
+# Examples here document the *kinds* of constraints Compliance produces.
+
+- query: Restrict accounting moves to user's company.
+  sql: |-
+    -- Compliance injects: WHERE company_id IN (...)
+    SELECT * FROM account_move am
+    WHERE am.company_id IN (1, 2);
+
+- query: Restrict stock_quant to user's allowed warehouses.
+  sql: |-
+    -- Compliance injects: WHERE warehouse_id IN (...)
+    SELECT * FROM stock_quant sq
+    WHERE sq.warehouse_id IN (3, 4);
+
+- query: Audit log all sensitive queries.
+  sql: |-
+    -- Compliance writes an audit row, does not transform SELECT:
+    INSERT INTO compliance_audit_log(user_id, query_hash, query_at)
+    VALUES (:user_id, :query_hash, NOW());

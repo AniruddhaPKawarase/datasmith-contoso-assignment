@@ -1,0 +1,79 @@
+# Few-shot examples for the Logistics domain agent.
+# Procurement, shipping, carriers, lead times.
+
+- query: Average supplier lead time over the last 6 months.
+  sql: |-
+    SELECT rp.name AS supplier,
+           AVG(EXTRACT(EPOCH FROM (po.date_approve - po.create_date)) / 86400) AS lead_time_days
+    FROM purchase_order po
+    JOIN res_partner rp ON rp.id = po.partner_id
+    WHERE po.state IN ('purchase', 'done')
+      AND po.create_date >= NOW() - INTERVAL '6 months'
+    GROUP BY rp.name
+    ORDER BY lead_time_days DESC;
+
+- query: Late deliveries this month grouped by carrier.
+  sql: |-
+    SELECT dc.name AS carrier, COUNT(*) AS late_count
+    FROM stock_picking sp
+    JOIN delivery_carrier dc ON dc.id = sp.carrier_id
+    WHERE sp.state = 'done'
+      AND sp.date_done > sp.scheduled_date
+      AND sp.date_done >= date_trunc('month', NOW())
+    GROUP BY dc.name
+    ORDER BY late_count DESC;
+
+- query: Outstanding purchase orders by supplier.
+  sql: |-
+    SELECT rp.name AS supplier, COUNT(po.id) AS open_pos, SUM(po.amount_total) AS open_value
+    FROM purchase_order po
+    JOIN res_partner rp ON rp.id = po.partner_id
+    WHERE po.state IN ('draft', 'sent', 'to approve', 'purchase')
+    GROUP BY rp.name
+    ORDER BY open_value DESC;
+
+- query: Shipments waiting to be dispatched at warehouse Chicago.
+  sql: |-
+    SELECT sp.name, sp.partner_id, sp.scheduled_date, sp.state
+    FROM stock_picking sp
+    JOIN stock_picking_type pt ON pt.id = sp.picking_type_id
+    JOIN stock_warehouse w ON w.id = pt.warehouse_id
+    WHERE w.name ILIKE '%Chicago%'
+      AND sp.state IN ('assigned', 'confirmed', 'waiting')
+      AND pt.code = 'outgoing'
+    ORDER BY sp.scheduled_date;
+
+- query: Top 5 suppliers by total purchase value this year.
+  sql: |-
+    SELECT rp.name AS supplier, SUM(po.amount_total) AS total_value
+    FROM purchase_order po
+    JOIN res_partner rp ON rp.id = po.partner_id
+    WHERE po.state IN ('purchase', 'done')
+      AND po.date_order >= date_trunc('year', NOW())
+    GROUP BY rp.name
+    ORDER BY total_value DESC
+    LIMIT 5;
+
+- query: How many pickings did each carrier complete last quarter?
+  sql: |-
+    SELECT dc.name AS carrier, COUNT(sp.id) AS completed_pickings
+    FROM stock_picking sp
+    JOIN delivery_carrier dc ON dc.id = sp.carrier_id
+    WHERE sp.state = 'done'
+      AND sp.date_done >= date_trunc('quarter', NOW() - INTERVAL '3 months')
+      AND sp.date_done <  date_trunc('quarter', NOW())
+    GROUP BY dc.name
+    ORDER BY completed_pickings DESC;
+
+- query: Supplier defect rate based on returned move lines.
+  sql: |-
+    SELECT rp.name AS supplier,
+           SUM(CASE WHEN sm.scrapped THEN sml.qty_done ELSE 0 END)::numeric
+             / NULLIF(SUM(sml.qty_done), 0) AS defect_rate
+    FROM stock_move_line sml
+    JOIN stock_move sm ON sm.id = sml.move_id
+    JOIN purchase_order_line pol ON pol.id = sm.purchase_line_id
+    JOIN purchase_order po ON po.id = pol.order_id
+    JOIN res_partner rp ON rp.id = po.partner_id
+    GROUP BY rp.name
+    ORDER BY defect_rate DESC NULLS LAST;

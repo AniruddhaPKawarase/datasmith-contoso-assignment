@@ -1,0 +1,13 @@
+The objectives of this dissertation are listed below.
+
+1. Domain-Aware Agent Decomposition. Build a multi-agent NL-to-SQL framework where specialists are split by business domain (Inventory, Logistics, Finance, Demand, Compliance) rather than by SQL pipeline step. Each agent owns a slice of the schema, a domain glossary, dialect rules, and its own bank of few-shot examples.
+
+2. Cross-Database Composition and Federation. A Composer agent receives the user query, splits it across the relevant domains, dispatches sub-queries to the right specialists, and merges the partial results across PostgreSQL (Odoo), DuckDB (analytics), and Redis (cache) with CTEs, currency conversion, and dialect translation handled automatically.
+
+3. Temporal Reasoning Module. A deterministic component, not a prompt trick, that maps phrases like "last quarter", "YoY", "rolling 30-day average", or "fiscal Q3" to exact SQL date predicates and window functions. The VLDB 2025 NL2SQL survey lists this as an open problem.
+
+4. Self-Correction with Reinforcement Learning. Borrow the ReAct-style validation loop from MARS-SQL and the candidate selection idea from CHASE-SQL, then adapt both to the domain-specialist setting. Each agent gets execution-feedback rewards. Three correction attempts max, then it escalates to the user.
+
+5. SCM-SQL Benchmark. Build and release the first NL-to-SQL benchmark dedicated to supply chain. Five hundred or more question-SQL pairs across six complexity levels, grounded in the Odoo schema and the DataCo Smart Supply Chain dataset (over 180,000 orders). The AWS Supply Chain Data Model is used as a reference for domain coverage.
+
+6. Evaluation. Compare against single-agent baselines and against MAC-SQL, MARS-SQL, and CHASE-SQL on Spider, BIRD, and the new SCM-SQL benchmark. Run ablations to isolate the contribution of domain decomposition, temporal reasoning, ambiguity resolution, and self-correction separately.

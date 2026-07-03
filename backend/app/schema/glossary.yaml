@@ -1,0 +1,104 @@
+# ─────────────────────────────────────────────────────────────────────
+# Business Glossary — Contoso variant.
+#
+# Every entry belongs to the `demand` domain (see domains.yaml comment
+# for why we use a single specialist for Contoso).
+# ─────────────────────────────────────────────────────────────────────
+
+version: 1
+
+terms:
+
+  - term: revenue
+    aliases: [sales, total sales, net sales, gross sales]
+    domain: demand
+    sql_fragment: |
+      SUM(salesamount)
+    tables: [factonlinesales, factsales]
+    notes: >
+      Sales amount is stored per-line in factonlinesales (Internet
+      channel — TC03 "internet") and factsales (Reseller / retail —
+      TC03 "reseller"). Use the fact table matching the channel; if
+      both channels combined, UNION ALL the two and sum.
+
+  - term: internet channel
+    aliases: [online channel, internet sales, online sales]
+    domain: demand
+    sql_fragment: |
+      /* Internet channel lives in factonlinesales */
+    tables: [factonlinesales]
+    notes: >
+      The PDF calls this "FactInternetSales"; the actual Contoso table
+      is factonlinesales. Same semantics.
+
+  - term: reseller channel
+    aliases: [retail channel, reseller sales, retail sales]
+    domain: demand
+    sql_fragment: |
+      /* Reseller / retail channel lives in factsales */
+    tables: [factsales]
+    notes: >
+      The PDF calls this "FactResellerSales"; the actual Contoso table
+      is factsales (joined with dimchannel).
+
+  - term: territory region
+    aliases: [region, sales region, territory]
+    domain: demand
+    sql_fragment: |
+      dimsalesterritory.salesterritoryregion
+    tables: [dimsalesterritory]
+    notes: >
+      "Region" in Contoso lives in dimsalesterritory.salesterritoryregion
+      (values like "Pacific", "North America"). Territories link to
+      customers via dimgeography (customer.geographykey → geography
+      → salesterritorykey → dimsalesterritory).
+
+  - term: customer lifetime value
+    aliases: [LTV, lifetime spend, total spend]
+    domain: demand
+    sql_fragment: |
+      SUM(salesamount)
+    tables: [factonlinesales, dimcustomer]
+    notes: >
+      Aggregate salesamount per customerkey across all time. Return
+      customer name from dimcustomer.
+
+  - term: quota attainment
+    aliases: ["% attainment", "quota achievement", "quota vs actual"]
+    domain: demand
+    sql_fragment: |
+      (SUM(actual) / NULLIF(SUM(quota), 0)) * 100 AS pct_attainment
+    tables: [factsalesquota, factsales]
+    notes: >
+      factsalesquota.salesquota is the target; join actual sales from
+      factsales/factonlinesales by (channelkey, storekey, productkey,
+      datekey) to compute attainment.
+
+  - term: month-over-month growth
+    aliases: [MoM growth, monthly growth, monthly trend]
+    domain: demand
+    sql_fragment: |
+      /* window aggregate over monthly buckets */
+    tables: [dimdate, factonlinesales]
+    notes: >
+      Aggregate salesamount by dimdate.calendarmonth (or datekey range)
+      and use LAG() to compute period-over-period delta.
+
+  - term: average order value
+    aliases: [AOV, mean order size]
+    domain: demand
+    sql_fragment: |
+      SUM(salesamount) / COUNT(DISTINCT salesordernumber)
+    tables: [factonlinesales]
+    notes: >
+      Per-order rollup: divide total revenue by distinct sales-order
+      count. Use salesordernumber, not primary key.
+
+  - term: top customers
+    aliases: [best customers, biggest customers, top N by spend]
+    domain: demand
+    sql_fragment: |
+      ORDER BY SUM(salesamount) DESC LIMIT N
+    tables: [factonlinesales, dimcustomer]
+    notes: >
+      Ranking pattern: GROUP BY customer + ORDER BY revenue DESC + LIMIT.

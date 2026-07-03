@@ -1,0 +1,132 @@
+
+========================================================================
+MID-SEM DEMO  —  Domain-Aware Multi-Agent NL-to-SQL
+========================================================================
+  Run timestamp:   2026-05-27 17:17:05
+  Log file:        docs\viva\MIDSEM_DEMO_LOG_20260527_171705.txt
+  Schema cache:    backend/data/odoo_schema.json
+  Postgres:        localhost:5432/odoo  (Odoo 17, 498 tables)
+
+========================================================================
+D1.  Cross-domain  +  Temporal  +  AST Compliance
+========================================================================
+  Demonstrates the dissertation's central thesis: domain-axis decomposition with deterministic temporal reasoning and per-CTE-scoped RBAC.
+
+  [Q1.1 ]  Compare total revenue this quarter with on-hand inventory value, by company.
+  [intent  ]  supply_chain_question
+  [domains ]  finance, inventory
+  [latency ]  9339 ms
+
+  Composed SQL:
+    SELECT c.id, c.name AS company, SUM(svl.remaining_value) AS
+          on_hand_inventory_value FROM stock_valuation_layer AS svl JOIN
+          res_partner AS c ON c.id = svl.company_id WHERE svl.remaining_qty > 0
+          AND svl.company_id IN (1) AND c.company_id IN (1) GROUP BY c.id, c.name
+          ORDER BY on_hand_inventory_value DESC;
+
+  [EXPLAIN ]  OK
+
+========================================================================
+D2.  Multi-turn dialogue — refinement and comparison
+========================================================================
+  Demonstrates the ReferenceDetector inheriting domains across turns. The Router sees the first query; turns 2 and 3 carry the prior domains and temporal context.
+
+  [T1   ]  Show top customers by revenue this quarter.
+  [intent  ]  supply_chain_question
+  [domains ]  finance, demand
+  [latency ]  7488 ms
+
+  Composed SQL:
+    WITH q_finance AS (SELECT rp.name AS customer, SUM(aml.credit - aml.debit) AS
+          total_revenue FROM account_move_line AS aml JOIN account_move AS am ON
+          am.id = aml.move_id JOIN account_account AS aa ON aa.id = aml.account_id
+          JOIN res_partner AS rp ON rp.id = aml.partner_id WHERE aa.account_type =
+          'income' AND am.state = 'posted' AND am.date >= CAST('2026-04-01' AS
+          DATE) AND am.date < CAST('2026-07-01' AS DATE) AND aml.company_id IN (1)
+          AND am.company_id IN (1) AND aa.company_id IN (1) AND rp.company_id IN
+          (1) GROUP BY rp.name ORDER BY total_revenue DESC), q_demand AS (SELECT
+          rp.id, rp.name, COUNT(so.id) AS order_count, SUM(so.amount_total) AS
+          total_sales FROM sale_order AS so JOIN res_partner AS rp ON rp.id =
+          so.partner_id WHERE so.state IN ('sale', 'done') AND so.date_order >=
+          CAST('2026-04-01' AS DATE) AND so.date_order < CAST('2026-07-01' AS
+          DATE) AND so.company_id IN (1) AND rp.company_id IN (1) GROUP BY rp.id,
+          rp.name ORDER BY total_sales DESC) SELECT q_finance.customer,
+          q_finance.total_revenue, q_demand.id, q_demand.name,
+          q_demand.order_count, q_demand.total_sales FROM q_finance CROSS JOIN
+          q_demand;
+
+  [EXPLAIN ]  OK
+  [T2   ]  Only the top 5.
+  [intent  ]  supply_chain_question
+  [domains ]  finance, demand
+  [latency ]  4994 ms
+
+  Composed SQL:
+    WITH q_finance AS (SELECT rp.name AS customer, SUM(aml.credit - aml.debit) AS
+          total_revenue FROM account_move_line AS aml JOIN account_move AS am ON
+          am.id = aml.move_id JOIN account_account AS aa ON aa.id = aml.account_id
+          JOIN res_partner AS rp ON rp.id = am.partner_id WHERE aa.account_type =
+          'income' AND am.state = 'posted' AND am.date >= DATE_TRUNC('QUARTER',
+          CURRENT_TIMESTAMP - INTERVAL '3 MONTHS') AND am.date <
+          DATE_TRUNC('QUARTER', CURRENT_TIMESTAMP) AND aml.company_id IN (1) AND
+          am.company_id IN (1) AND aa.company_id IN (1) AND rp.company_id IN (1)
+          GROUP BY rp.name ORDER BY total_revenue DESC LIMIT 5), q_demand AS
+          (SELECT rp.name AS customer, SUM(sol.price_subtotal) AS total_revenue
+          FROM sale_order_line AS sol JOIN sale_order AS so ON so.id =
+          sol.order_id JOIN res_partner AS rp ON rp.id = so.partner_id WHERE
+          so.state IN ('sale', 'done') AND so.date_order >= DATE_TRUNC('QUARTER',
+          CURRENT_TIMESTAMP) AND sol.company_id IN (1) AND so.company_id IN (1)
+          AND rp.company_id IN (1) GROUP BY rp.name ORDER BY total_revenue DESC
+          LIMIT 5) SELECT q_finance.customer, q_finance.total_revenue,
+          q_demand.customer AS q_demand_customer, q_demand.total_revenue AS
+          q_demand_total_revenue FROM q_finance CROSS JOIN q_demand;
+
+  [EXPLAIN ]  OK
+  [T3   ]  Now compare with the same period last year.
+  [intent  ]  supply_chain_question
+  [domains ]  finance, demand
+  [latency ]  15397 ms
+
+  Composed SQL:
+    SELECT 'Current Period' AS period, rp.name AS customer,
+          SUM(sol.product_uom_qty * sol.price_unit) AS total_revenue FROM
+          sale_order_line AS sol JOIN sale_order AS so ON so.id = sol.order_id
+          JOIN res_partner AS rp ON rp.id = so.partner_id WHERE so.state IN
+          ('sale', 'done') AND so.date_order >= CAST('2026-01-01' AS DATE) AND
+          so.date_order < CAST('2027-01-01' AS DATE) AND sol.company_id IN (1) AND
+          so.company_id IN (1) AND rp.company_id IN (1) GROUP BY rp.name ORDER BY
+          total_revenue DESC LIMIT 5 UNION ALL SELECT 'Prior Year' AS period,
+          rp.name AS customer, SUM(sol.product_uom_qty * sol.price_unit) AS
+          total_revenue FROM sale_order_line AS sol JOIN sale_order AS so ON so.id
+          = sol.order_id JOIN res_partner AS rp ON rp.id = so.partner_id WHERE
+          so.state IN ('sale', 'done') AND so.date_order >= CAST('2025-01-01' AS
+          DATE) AND so.date_order < CAST('2026-01-01' AS DATE) AND sol.company_id
+          IN (1) AND so.company_id IN (1) AND rp.company_id IN (1) GROUP BY
+          rp.name ORDER BY total_revenue DESC LIMIT 5;
+
+  [EXPLAIN ]  FAIL — syntax error at or near "UNION"
+
+========================================================================
+D3.  Ambiguity — calibrated refusal
+========================================================================
+  Demonstrates the AmbiguityResolver. The system recognises 'lead time' has three glossary senses, refuses to guess, and asks a structured clarification question.
+
+  [Q3.1 ]  What is the lead time for our Asian suppliers?
+  [intent  ]  clarification_needed
+  [domains ]  (none)
+  [latency ]  2468 ms
+  [panel   ]  By 'lead time', do you mean "procurement (purchase_order)", "manufacturing (mrp_production)", "delivery (stock_picking)"? Please clarify so I can route the query to the right specialist.
+  No SQL produced — by design (see panel field above).
+
+========================================================================
+TOKEN USAGE  &  ESTIMATED COST
+========================================================================
+  router        gpt-4o-mini                       5 call(s)  in=2137  out=419
+  sql_gen       claude-haiku-4-5                  10 call(s)  in=35683  out=2444
+
+  TOTAL    in=37820  out=2863  ≈ $0.0104
+
+========================================================================
+DEMO COMPLETE
+========================================================================
+  Transcript saved to docs\viva\MIDSEM_DEMO_LOG_20260527_171705.txt

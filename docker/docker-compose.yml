@@ -1,0 +1,107 @@
+name: scm-nl2sql
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: scm-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-odoo}
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo_dev_pwd}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odoo}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - scm-net
+
+  odoo:
+    image: odoo:17.0
+    container_name: scm-odoo
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      HOST: postgres
+      USER: ${POSTGRES_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:-odoo_dev_pwd}
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./odoo/config:/etc/odoo
+    ports:
+      - "8069:8069"
+    networks:
+      - scm-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: scm-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - scm-net
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: scm-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: ../.env
+    environment:
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+    volumes:
+      - ../backend:/app
+      - duckdb-data:/data
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - scm-net
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../docker/Dockerfile.frontend
+    container_name: scm-frontend
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    networks:
+      - scm-net
+
+volumes:
+  postgres-data:
+  odoo-data:
+  redis-data:
+  duckdb-data:
+
+networks:
+  scm-net:
+    driver: bridge

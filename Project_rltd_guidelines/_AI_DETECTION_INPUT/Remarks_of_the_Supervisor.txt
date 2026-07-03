@@ -1,0 +1,11 @@
+The student has picked an open and active problem in enterprise text-to-SQL where state-of-the-art scores still drop sharply on real schemas. The literature review is thorough. The research gap, domain-aware multi-agent decomposition for supply chain, is genuine and well argued. Contributions are concrete and measurable, including a new SCM-SQL benchmark. The scope is ambitious but bounded. The full open-source stack runs locally, which makes the work reproducible. Evaluation against MAC-SQL, MARS-SQL, and CHASE-SQL is rigorous. The schedule fits the available time. I recommend the project proceed as proposed.
+
+Information about the Supervisor
+
+BIRLA INSTITUTE OF TECHNOLOGY & SCIENCE, PILANI
+
+WORK INTEGRATED LEARNING PROGRAMMES (WILP) DIVISION
+
+FOURTH SEMESTER OF ACADEMIC YEAR 2025-2026
+
+AIMLCZG628T: Dissertation Outline

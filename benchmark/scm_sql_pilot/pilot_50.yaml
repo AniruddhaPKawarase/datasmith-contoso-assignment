@@ -1,0 +1,838 @@
+# SCM-SQL Pilot Benchmark — 50 verified NL/SQL pairs
+#
+# Distribution across the 6 complexity levels (per VIVA_PREP_OUTLINE §8):
+#   L1  Single-domain, single-table          ×  10
+#   L2  Single-domain, multi-table           ×  10
+#   L3  Cross-domain  +  temporal            ×  15   (showcase level)
+#   L4  Cross-DB federation  (PG-only stand-in)  ×  5
+#   L5  Predictive  /  strategic             ×   5
+#   L6  Multi-turn conversational            ×   5   (each = 2-3 turns)
+#
+# Verification: every gold_sql executes against the live Odoo 17 demo DB
+# (498 tables, populated by `--load-demo=true`) and returns a non-empty
+# result OR is explicitly marked `expects_empty: true`.
+#
+# Format (per pair):
+#   id        : stable identifier
+#   level     : 1-6
+#   domains   : list of expected business-domain agents
+#   nl        : natural-language question
+#   gold_sql  : verified PostgreSQL (semicolon-terminated, single stmt)
+#   turns     : for L6 only — list of (nl, gold_sql) pairs in sequence
+#   tags      : free-form annotations (temporal, aggregate, etc.)
+
+pairs:
+
+# ── L1  Single-domain, single-table  ──────────────────────────────────
+
+  - id: L1-001
+    level: 1
+    domains: [inventory]
+    nl: "How many products do we have in total?"
+    gold_sql: |
+      SELECT COUNT(*) AS product_count FROM product_product;
+    tags: [aggregate, count]
+
+  - id: L1-002
+    level: 1
+    domains: [inventory]
+    nl: "List all warehouses with their internal codes."
+    gold_sql: |
+      SELECT id, name, code FROM stock_warehouse ORDER BY name;
+    tags: [listing]
+
+  - id: L1-003
+    level: 1
+    domains: [demand]
+    nl: "How many sale orders have been confirmed?"
+    gold_sql: |
+      SELECT COUNT(*) AS confirmed_orders
+      FROM sale_order
+      WHERE state IN ('sale','done');
+    tags: [aggregate, filter]
+
+  - id: L1-004
+    level: 1
+    domains: [demand]
+    nl: "Show the largest sale order by amount."
+    gold_sql: |
+      SELECT id, name, amount_total
+      FROM sale_order
+      ORDER BY amount_total DESC NULLS LAST
+      LIMIT 1;
+    tags: [ranking]
+
+  - id: L1-005
+    level: 1
+    domains: [finance]
+    nl: "How many posted journal entries do we have?"
+    gold_sql: |
+      SELECT COUNT(*) AS posted_moves
+      FROM account_move
+      WHERE state = 'posted';
+    tags: [aggregate, filter]
+
+  - id: L1-006
+    level: 1
+    domains: [logistics]
+    nl: "List all purchase orders and their statuses."
+    gold_sql: |
+      SELECT id, name, state, amount_total
+      FROM purchase_order
+      ORDER BY id;
+    tags: [listing]
+
+  - id: L1-007
+    level: 1
+    domains: [logistics]
+    nl: "How many stock pickings are in the done state?"
+    gold_sql: |
+      SELECT COUNT(*) AS completed_pickings
+      FROM stock_picking
+      WHERE state = 'done';
+    tags: [aggregate, filter]
+
+  - id: L1-008
+    level: 1
+    domains: [inventory]
+    nl: "What is the total quantity in stock across all locations?"
+    gold_sql: |
+      SELECT SUM(quantity) AS total_quantity FROM stock_quant;
+    tags: [aggregate, sum]
+
+  - id: L1-009
+    level: 1
+    domains: [demand]
+    nl: "How many distinct customers have placed orders?"
+    gold_sql: |
+      SELECT COUNT(DISTINCT partner_id) AS unique_customers
+      FROM sale_order;
+    tags: [aggregate, distinct]
+
+  - id: L1-010
+    level: 1
+    domains: [finance]
+    nl: "List the active currencies."
+    gold_sql: |
+      SELECT id, name, symbol FROM res_currency WHERE active = true ORDER BY name;
+    tags: [listing, filter]
+
+# ── L2  Single-domain, multi-table  ───────────────────────────────────
+
+  - id: L2-001
+    level: 2
+    domains: [inventory]
+    nl: "List products with their on-hand quantities."
+    gold_sql: |
+      SELECT pt.name->>'en_US' AS product, COALESCE(SUM(sq.quantity), 0) AS on_hand
+      FROM product_product pp
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      LEFT JOIN stock_quant sq ON sq.product_id = pp.id
+      GROUP BY pp.id, pt.name
+      ORDER BY on_hand DESC;
+    tags: [join, aggregate]
+
+  - id: L2-002
+    level: 2
+    domains: [inventory]
+    nl: "Show every warehouse with its number of internal locations."
+    gold_sql: |
+      SELECT w.name AS warehouse, COUNT(l.id) AS internal_locations
+      FROM stock_warehouse w
+      LEFT JOIN stock_location l
+        ON l.location_id = w.view_location_id AND l.usage = 'internal'
+      GROUP BY w.id, w.name
+      ORDER BY w.name;
+    tags: [join, aggregate]
+
+  - id: L2-003
+    level: 2
+    domains: [demand]
+    nl: "List sale orders with the customer name."
+    gold_sql: |
+      SELECT so.id, so.name, rp.name AS customer, so.amount_total
+      FROM sale_order so
+      JOIN res_partner rp ON rp.id = so.partner_id
+      ORDER BY so.id;
+    tags: [join]
+
+  - id: L2-004
+    level: 2
+    domains: [demand]
+    nl: "Show each customer's total revenue from sale orders."
+    gold_sql: |
+      SELECT rp.name AS customer, SUM(so.amount_total) AS total_revenue
+      FROM sale_order so
+      JOIN res_partner rp ON rp.id = so.partner_id
+      WHERE so.state IN ('sale','done')
+      GROUP BY rp.id, rp.name
+      ORDER BY total_revenue DESC NULLS LAST;
+    tags: [join, aggregate]
+
+  - id: L2-005
+    level: 2
+    domains: [logistics]
+    nl: "List purchase orders with the supplier name."
+    gold_sql: |
+      SELECT po.id, po.name, rp.name AS supplier, po.amount_total
+      FROM purchase_order po
+      JOIN res_partner rp ON rp.id = po.partner_id
+      ORDER BY po.id;
+    tags: [join]
+
+  - id: L2-006
+    level: 2
+    domains: [logistics]
+    nl: "Show pickings with their carrier."
+    gold_sql: |
+      SELECT sp.id, sp.name, dc.name AS carrier, sp.state
+      FROM stock_picking sp
+      LEFT JOIN delivery_carrier dc ON dc.id = sp.carrier_id
+      ORDER BY sp.id;
+    tags: [join, left_join]
+
+  - id: L2-007
+    level: 2
+    domains: [finance]
+    nl: "Show posted journal entries with their company."
+    gold_sql: |
+      SELECT am.id, am.name, rc.name AS company, am.amount_total
+      FROM account_move am
+      JOIN res_company rc ON rc.id = am.company_id
+      WHERE am.state = 'posted'
+      ORDER BY am.id;
+    tags: [join, filter]
+
+  - id: L2-008
+    level: 2
+    domains: [finance]
+    nl: "List invoices with their payment state and customer."
+    gold_sql: |
+      SELECT am.name AS invoice, rp.name AS customer,
+             am.payment_state, am.amount_total
+      FROM account_move am
+      JOIN res_partner rp ON rp.id = am.partner_id
+      WHERE am.move_type = 'out_invoice' AND am.state = 'posted'
+      ORDER BY am.id;
+    tags: [join, filter]
+
+  - id: L2-009
+    level: 2
+    domains: [inventory]
+    nl: "Show products with their internal category."
+    gold_sql: |
+      SELECT pt.name->>'en_US' AS product, pc.complete_name AS category
+      FROM product_template pt
+      JOIN product_category pc ON pc.id = pt.categ_id
+      ORDER BY pc.complete_name, pt.name;
+    tags: [join]
+
+  - id: L2-010
+    level: 2
+    domains: [logistics]
+    nl: "Count the pickings per warehouse."
+    gold_sql: |
+      SELECT w.name AS warehouse, COUNT(sp.id) AS picking_count
+      FROM stock_picking sp
+      JOIN stock_picking_type pt ON pt.id = sp.picking_type_id
+      JOIN stock_warehouse w ON w.id = pt.warehouse_id
+      GROUP BY w.id, w.name
+      ORDER BY picking_count DESC;
+    tags: [join, aggregate]
+
+# ── L3  Cross-domain  +  temporal  ────────────────────────────────────
+
+  - id: L3-001
+    level: 3
+    domains: [finance, demand]
+    nl: "Compare total revenue and order count by customer this year."
+    gold_sql: |
+      SELECT rp.name AS customer,
+             COUNT(so.id) AS order_count,
+             SUM(so.amount_total) AS total_revenue
+      FROM sale_order so
+      JOIN res_partner rp ON rp.id = so.partner_id
+      WHERE so.state IN ('sale','done')
+        AND so.date_order >= date_trunc('year', NOW())
+      GROUP BY rp.id, rp.name
+      ORDER BY total_revenue DESC NULLS LAST;
+    tags: [cross_domain, temporal, aggregate]
+
+  - id: L3-002
+    level: 3
+    domains: [inventory, demand]
+    nl: "List products with both their on-hand quantity and total units sold this year."
+    gold_sql: |
+      WITH stock AS (
+        SELECT product_id, SUM(quantity) AS on_hand FROM stock_quant GROUP BY product_id
+      ), sold AS (
+        SELECT sol.product_id, SUM(sol.product_uom_qty) AS units_sold
+        FROM sale_order_line sol
+        JOIN sale_order so ON so.id = sol.order_id
+        WHERE so.state IN ('sale','done')
+          AND so.date_order >= date_trunc('year', NOW())
+        GROUP BY sol.product_id
+      )
+      SELECT pt.name->>'en_US' AS product,
+             COALESCE(s.on_hand, 0) AS on_hand,
+             COALESCE(sd.units_sold, 0) AS units_sold
+      FROM product_product pp
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      LEFT JOIN stock s ON s.product_id = pp.id
+      LEFT JOIN sold sd ON sd.product_id = pp.id
+      ORDER BY product;
+    tags: [cross_domain, temporal, cte]
+
+  - id: L3-003
+    level: 3
+    domains: [logistics, finance]
+    nl: "Show purchase order total value by supplier for orders confirmed this year."
+    gold_sql: |
+      SELECT rp.name AS supplier, SUM(po.amount_total) AS total_value
+      FROM purchase_order po
+      JOIN res_partner rp ON rp.id = po.partner_id
+      WHERE po.state IN ('purchase','done')
+        AND po.date_order >= date_trunc('year', NOW())
+      GROUP BY rp.id, rp.name
+      ORDER BY total_value DESC NULLS LAST;
+    tags: [cross_domain, temporal]
+
+  - id: L3-004
+    level: 3
+    domains: [inventory, logistics]
+    nl: "List products with both incoming and outgoing move volume this year."
+    gold_sql: |
+      SELECT pt.name->>'en_US' AS product,
+             SUM(CASE WHEN ldst.usage = 'internal' AND lsrc.usage <> 'internal'
+                      THEN sm.product_qty ELSE 0 END) AS incoming_qty,
+             SUM(CASE WHEN ldst.usage <> 'internal' AND lsrc.usage = 'internal'
+                      THEN sm.product_qty ELSE 0 END) AS outgoing_qty
+      FROM stock_move sm
+      JOIN product_product pp ON pp.id = sm.product_id
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      JOIN stock_location lsrc ON lsrc.id = sm.location_id
+      JOIN stock_location ldst ON ldst.id = sm.location_dest_id
+      WHERE sm.state = 'done'
+        AND sm.date >= date_trunc('year', NOW())
+      GROUP BY pt.name
+      ORDER BY product;
+    tags: [cross_domain, temporal, case_when]
+
+  - id: L3-005
+    level: 3
+    domains: [finance, demand]
+    nl: "Show monthly revenue trend for this year."
+    gold_sql: |
+      SELECT date_trunc('month', so.date_order) AS month,
+             SUM(so.amount_total) AS revenue
+      FROM sale_order so
+      WHERE so.state IN ('sale','done')
+        AND so.date_order >= date_trunc('year', NOW())
+      GROUP BY 1
+      ORDER BY 1;
+    tags: [temporal, group_by_date]
+
+  - id: L3-006
+    level: 3
+    domains: [demand, logistics]
+    nl: "How many sale orders confirmed last 90 days got delivered?"
+    gold_sql: |
+      SELECT COUNT(DISTINCT so.id) AS delivered_orders
+      FROM sale_order so
+      JOIN stock_picking sp ON sp.sale_id = so.id
+      WHERE so.state IN ('sale','done')
+        AND so.date_order >= NOW() - INTERVAL '90 days'
+        AND sp.state = 'done';
+    tags: [cross_domain, temporal, rolling]
+
+  - id: L3-007
+    level: 3
+    domains: [inventory, finance]
+    nl: "Show inventory valuation by product category."
+    gold_sql: |
+      SELECT pc.complete_name AS category,
+             SUM(svl.remaining_value) AS inventory_value
+      FROM stock_valuation_layer svl
+      JOIN product_product pp ON pp.id = svl.product_id
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      JOIN product_category pc ON pc.id = pt.categ_id
+      WHERE svl.remaining_qty > 0
+      GROUP BY pc.complete_name
+      ORDER BY inventory_value DESC NULLS LAST;
+    tags: [cross_domain, aggregate]
+
+  - id: L3-008
+    level: 3
+    domains: [demand, logistics]
+    nl: "Show top 10 products by units sold this year."
+    gold_sql: |
+      SELECT pt.name->>'en_US' AS product, SUM(sol.product_uom_qty) AS units_sold
+      FROM sale_order_line sol
+      JOIN sale_order so ON so.id = sol.order_id
+      JOIN product_product pp ON pp.id = sol.product_id
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      WHERE so.state IN ('sale','done')
+        AND so.date_order >= date_trunc('year', NOW())
+      GROUP BY pt.name
+      ORDER BY units_sold DESC NULLS LAST
+      LIMIT 10;
+    tags: [cross_domain, temporal, ranking]
+
+  - id: L3-009
+    level: 3
+    domains: [finance, demand]
+    nl: "Compare confirmed sales versus invoiced revenue this year."
+    gold_sql: |
+      WITH sales AS (
+        SELECT SUM(amount_total) AS confirmed_sales FROM sale_order
+        WHERE state IN ('sale','done')
+          AND date_order >= date_trunc('year', NOW())
+      ), invoiced AS (
+        SELECT SUM(amount_total_signed) AS invoiced_revenue FROM account_move
+        WHERE move_type = 'out_invoice' AND state = 'posted'
+          AND date >= date_trunc('year', NOW())
+      )
+      SELECT confirmed_sales, invoiced_revenue
+      FROM sales CROSS JOIN invoiced;
+    tags: [cross_domain, temporal, cte, cross_join]
+
+  - id: L3-010
+    level: 3
+    domains: [inventory, logistics]
+    nl: "Show number of pickings per warehouse last 30 days."
+    gold_sql: |
+      SELECT w.name AS warehouse, COUNT(sp.id) AS picking_count
+      FROM stock_picking sp
+      JOIN stock_picking_type pt ON pt.id = sp.picking_type_id
+      JOIN stock_warehouse w ON w.id = pt.warehouse_id
+      WHERE sp.scheduled_date >= NOW() - INTERVAL '30 days'
+      GROUP BY w.id, w.name
+      ORDER BY picking_count DESC;
+    tags: [cross_domain, temporal, rolling]
+
+  - id: L3-011
+    level: 3
+    domains: [finance, demand]
+    nl: "Show this month's total sales and number of unique customers."
+    gold_sql: |
+      SELECT COUNT(DISTINCT partner_id) AS unique_customers,
+             SUM(amount_total) AS total_sales
+      FROM sale_order
+      WHERE state IN ('sale','done')
+        AND date_order >= date_trunc('month', NOW());
+    tags: [cross_domain, temporal, aggregate]
+
+  - id: L3-012
+    level: 3
+    domains: [demand, finance]
+    nl: "Show year-to-date sales by company."
+    gold_sql: |
+      SELECT rc.name AS company,
+             COUNT(so.id) AS order_count,
+             SUM(so.amount_total) AS ytd_sales
+      FROM sale_order so
+      JOIN res_company rc ON rc.id = so.company_id
+      WHERE so.state IN ('sale','done')
+        AND so.date_order >= date_trunc('year', NOW())
+      GROUP BY rc.id, rc.name
+      ORDER BY ytd_sales DESC NULLS LAST;
+    tags: [cross_domain, temporal, ytd]
+
+  - id: L3-013
+    level: 3
+    domains: [logistics, inventory]
+    nl: "Show on-hand quantity by warehouse and product category."
+    gold_sql: |
+      SELECT w.name AS warehouse, pc.complete_name AS category,
+             SUM(sq.quantity) AS on_hand
+      FROM stock_quant sq
+      JOIN stock_location l ON l.id = sq.location_id
+      JOIN stock_warehouse w ON w.view_location_id = l.location_id
+      JOIN product_product pp ON pp.id = sq.product_id
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      JOIN product_category pc ON pc.id = pt.categ_id
+      WHERE l.usage = 'internal'
+      GROUP BY w.name, pc.complete_name
+      ORDER BY w.name, on_hand DESC NULLS LAST;
+    tags: [cross_domain, group_by_two]
+
+  - id: L3-014
+    level: 3
+    domains: [finance, demand]
+    nl: "What is the average order value this quarter?"
+    gold_sql: |
+      SELECT AVG(amount_total) AS avg_order_value
+      FROM sale_order
+      WHERE state IN ('sale','done')
+        AND date_order >= date_trunc('quarter', NOW());
+    tags: [cross_domain, temporal, average]
+
+  - id: L3-015
+    level: 3
+    domains: [demand, logistics]
+    nl: "Show how many sale orders this month have not yet shipped."
+    gold_sql: |
+      SELECT COUNT(DISTINCT so.id) AS pending_shipments
+      FROM sale_order so
+      LEFT JOIN stock_picking sp
+        ON sp.sale_id = so.id AND sp.state = 'done'
+      WHERE so.state IN ('sale','done')
+        AND so.date_order >= date_trunc('month', NOW())
+        AND sp.id IS NULL;
+    tags: [cross_domain, temporal, anti_join]
+
+# ── L4  Cross-DB federation  (PG-only stand-in for pilot)  ────────────
+
+  - id: L4-001
+    level: 4
+    domains: [finance, demand]
+    nl: "Compute total invoiced revenue converted to company currency."
+    gold_sql: |
+      SELECT rc.name AS company,
+             SUM(am.amount_total_signed) AS revenue_company_currency
+      FROM account_move am
+      JOIN res_company rc ON rc.id = am.company_id
+      WHERE am.move_type = 'out_invoice' AND am.state = 'posted'
+      GROUP BY rc.id, rc.name
+      ORDER BY revenue_company_currency DESC NULLS LAST;
+    tags: [federation_stub, currency]
+
+  - id: L4-002
+    level: 4
+    domains: [inventory, finance]
+    nl: "Show landed inventory value: stock valuation plus average procurement cost."
+    gold_sql: |
+      WITH valuation AS (
+        SELECT product_id, SUM(remaining_value) AS book_value
+        FROM stock_valuation_layer
+        WHERE remaining_qty > 0
+        GROUP BY product_id
+      ), avg_cost AS (
+        SELECT pol.product_id, AVG(pol.price_unit) AS avg_unit_cost
+        FROM purchase_order_line pol
+        JOIN purchase_order po ON po.id = pol.order_id
+        WHERE po.state IN ('purchase','done')
+        GROUP BY pol.product_id
+      )
+      SELECT pt.name->>'en_US' AS product,
+             COALESCE(v.book_value, 0) AS book_value,
+             COALESCE(c.avg_unit_cost, 0) AS avg_unit_cost
+      FROM product_product pp
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      LEFT JOIN valuation v ON v.product_id = pp.id
+      LEFT JOIN avg_cost c ON c.product_id = pp.id
+      ORDER BY book_value DESC NULLS LAST
+      LIMIT 50;
+    tags: [federation_stub, cte_dual]
+
+  - id: L4-003
+    level: 4
+    domains: [demand, logistics, finance]
+    nl: "Show sales, fulfilment time, and gross margin by product this year."
+    gold_sql: |
+      WITH sales AS (
+        SELECT sol.product_id,
+               SUM(sol.product_uom_qty) AS units_sold,
+               SUM(sol.price_subtotal) AS revenue
+        FROM sale_order_line sol
+        JOIN sale_order so ON so.id = sol.order_id
+        WHERE so.state IN ('sale','done')
+          AND so.date_order >= date_trunc('year', NOW())
+        GROUP BY sol.product_id
+      )
+      SELECT pt.name->>'en_US' AS product,
+             s.units_sold, s.revenue
+      FROM product_product pp
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      JOIN sales s ON s.product_id = pp.id
+      ORDER BY revenue DESC NULLS LAST
+      LIMIT 20;
+    tags: [federation_stub, multi_domain]
+
+  - id: L4-004
+    level: 4
+    domains: [inventory, demand]
+    nl: "Show stock turn ratio (units sold YTD / average on-hand) by product."
+    gold_sql: |
+      WITH stock AS (
+        SELECT product_id, AVG(quantity) AS avg_on_hand
+        FROM stock_quant GROUP BY product_id
+      ), sold AS (
+        SELECT sol.product_id, SUM(sol.product_uom_qty) AS units_sold
+        FROM sale_order_line sol
+        JOIN sale_order so ON so.id = sol.order_id
+        WHERE so.state IN ('sale','done')
+          AND so.date_order >= date_trunc('year', NOW())
+        GROUP BY sol.product_id
+      )
+      SELECT pt.name->>'en_US' AS product,
+             sd.units_sold, st.avg_on_hand,
+             CASE WHEN st.avg_on_hand > 0
+                  THEN sd.units_sold / st.avg_on_hand ELSE NULL END AS turn_ratio
+      FROM product_product pp
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      JOIN stock st ON st.product_id = pp.id
+      JOIN sold sd ON sd.product_id = pp.id
+      ORDER BY turn_ratio DESC NULLS LAST
+      LIMIT 20;
+    tags: [federation_stub, derived_metric]
+
+  - id: L4-005
+    level: 4
+    domains: [logistics, finance]
+    nl: "Show total spend per supplier with their company breakdown."
+    gold_sql: |
+      SELECT rp.name AS supplier, rc.name AS company,
+             SUM(po.amount_total) AS spend
+      FROM purchase_order po
+      JOIN res_partner rp ON rp.id = po.partner_id
+      JOIN res_company rc ON rc.id = po.company_id
+      WHERE po.state IN ('purchase','done')
+      GROUP BY rp.id, rp.name, rc.id, rc.name
+      ORDER BY spend DESC NULLS LAST;
+    tags: [federation_stub, group_by_two]
+
+# ── L5  Predictive  /  strategic  ─────────────────────────────────────
+
+  - id: L5-001
+    level: 5
+    domains: [inventory, demand]
+    nl: "Identify products at risk of stock-out (on-hand below average monthly demand)."
+    gold_sql: |
+      WITH demand_per_month AS (
+        SELECT sol.product_id,
+               SUM(sol.product_uom_qty) / NULLIF(GREATEST(1,
+                 EXTRACT(MONTH FROM NOW())::int), 0) AS avg_monthly_demand
+        FROM sale_order_line sol
+        JOIN sale_order so ON so.id = sol.order_id
+        WHERE so.state IN ('sale','done')
+          AND so.date_order >= date_trunc('year', NOW())
+        GROUP BY sol.product_id
+      ), stock AS (
+        SELECT product_id, SUM(quantity) AS on_hand
+        FROM stock_quant GROUP BY product_id
+      )
+      SELECT pt.name->>'en_US' AS product,
+             COALESCE(s.on_hand, 0) AS on_hand,
+             COALESCE(d.avg_monthly_demand, 0) AS avg_monthly_demand
+      FROM product_product pp
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      LEFT JOIN stock s ON s.product_id = pp.id
+      LEFT JOIN demand_per_month d ON d.product_id = pp.id
+      WHERE COALESCE(d.avg_monthly_demand, 0) > 0
+        AND COALESCE(s.on_hand, 0) < d.avg_monthly_demand
+      ORDER BY avg_monthly_demand DESC NULLS LAST;
+    tags: [predictive, risk]
+
+  - id: L5-002
+    level: 5
+    domains: [demand, finance]
+    nl: "Project this year's revenue by extrapolating the current monthly average to a full year."
+    gold_sql: |
+      WITH ytd AS (
+        SELECT SUM(amount_total) AS ytd_revenue,
+               GREATEST(1, EXTRACT(MONTH FROM NOW())::int) AS months_elapsed
+        FROM sale_order
+        WHERE state IN ('sale','done')
+          AND date_order >= date_trunc('year', NOW())
+      )
+      SELECT ytd_revenue,
+             months_elapsed,
+             ROUND( (ytd_revenue / months_elapsed) * 12 ) AS projected_annual
+      FROM ytd;
+    tags: [predictive, projection]
+
+  - id: L5-003
+    level: 5
+    domains: [demand]
+    nl: "Find the most valuable customer segment based on order frequency and total revenue."
+    gold_sql: |
+      SELECT rp.name AS customer,
+             COUNT(so.id) AS order_count,
+             SUM(so.amount_total) AS total_revenue,
+             AVG(so.amount_total) AS avg_order_value
+      FROM sale_order so
+      JOIN res_partner rp ON rp.id = so.partner_id
+      WHERE so.state IN ('sale','done')
+      GROUP BY rp.id, rp.name
+      HAVING COUNT(so.id) > 0
+      ORDER BY total_revenue DESC NULLS LAST
+      LIMIT 5;
+    tags: [predictive, segmentation]
+
+  - id: L5-004
+    level: 5
+    domains: [logistics, inventory]
+    nl: "Which products have the longest supplier delivery times historically?"
+    gold_sql: |
+      SELECT pt.name->>'en_US' AS product,
+             rp.name AS supplier,
+             COUNT(*) AS observations
+      FROM purchase_order_line pol
+      JOIN purchase_order po ON po.id = pol.order_id
+      JOIN res_partner rp ON rp.id = po.partner_id
+      JOIN product_product pp ON pp.id = pol.product_id
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      WHERE po.state IN ('purchase','done')
+      GROUP BY pt.name, rp.name
+      ORDER BY observations DESC NULLS LAST
+      LIMIT 10;
+    tags: [predictive, historical]
+
+  - id: L5-005
+    level: 5
+    domains: [finance, demand, inventory]
+    nl: "Identify products with high revenue but low inventory turn."
+    gold_sql: |
+      WITH revenue AS (
+        SELECT sol.product_id, SUM(sol.price_subtotal) AS revenue
+        FROM sale_order_line sol
+        JOIN sale_order so ON so.id = sol.order_id
+        WHERE so.state IN ('sale','done')
+        GROUP BY sol.product_id
+      ), on_hand AS (
+        SELECT product_id, SUM(quantity) AS qty FROM stock_quant GROUP BY product_id
+      )
+      SELECT pt.name->>'en_US' AS product,
+             r.revenue, h.qty
+      FROM product_product pp
+      JOIN product_template pt ON pt.id = pp.product_tmpl_id
+      JOIN revenue r ON r.product_id = pp.id
+      LEFT JOIN on_hand h ON h.product_id = pp.id
+      WHERE r.revenue IS NOT NULL
+      ORDER BY r.revenue DESC NULLS LAST
+      LIMIT 10;
+    tags: [predictive, three_domain]
+
+# ── L6  Multi-turn conversational  ────────────────────────────────────
+
+  - id: L6-001
+    level: 6
+    domains: [demand]
+    turns:
+      - nl: "Show top customers by revenue this year."
+        gold_sql: |
+          SELECT rp.name AS customer, SUM(so.amount_total) AS revenue
+          FROM sale_order so
+          JOIN res_partner rp ON rp.id = so.partner_id
+          WHERE so.state IN ('sale','done')
+            AND so.date_order >= date_trunc('year', NOW())
+          GROUP BY rp.id, rp.name
+          ORDER BY revenue DESC NULLS LAST;
+      - nl: "Only the top 5."
+        gold_sql: |
+          SELECT rp.name AS customer, SUM(so.amount_total) AS revenue
+          FROM sale_order so
+          JOIN res_partner rp ON rp.id = so.partner_id
+          WHERE so.state IN ('sale','done')
+            AND so.date_order >= date_trunc('year', NOW())
+          GROUP BY rp.id, rp.name
+          ORDER BY revenue DESC NULLS LAST
+          LIMIT 5;
+    tags: [multi_turn, refinement]
+
+  - id: L6-002
+    level: 6
+    domains: [inventory]
+    turns:
+      - nl: "Show on-hand quantity by product."
+        gold_sql: |
+          SELECT pt.name->>'en_US' AS product, SUM(sq.quantity) AS on_hand
+          FROM stock_quant sq
+          JOIN product_product pp ON pp.id = sq.product_id
+          JOIN product_template pt ON pt.id = pp.product_tmpl_id
+          GROUP BY pt.name
+          ORDER BY on_hand DESC NULLS LAST;
+      - nl: "Just the ones with quantity over 10."
+        gold_sql: |
+          SELECT pt.name->>'en_US' AS product, SUM(sq.quantity) AS on_hand
+          FROM stock_quant sq
+          JOIN product_product pp ON pp.id = sq.product_id
+          JOIN product_template pt ON pt.id = pp.product_tmpl_id
+          GROUP BY pt.name
+          HAVING SUM(sq.quantity) > 10
+          ORDER BY on_hand DESC NULLS LAST;
+    tags: [multi_turn, refinement]
+
+  - id: L6-003
+    level: 6
+    domains: [finance, demand]
+    turns:
+      - nl: "Show total revenue this quarter."
+        gold_sql: |
+          SELECT SUM(amount_total) AS total_revenue
+          FROM sale_order
+          WHERE state IN ('sale','done')
+            AND date_order >= date_trunc('quarter', NOW());
+      - nl: "Compare with the same quarter last year."
+        gold_sql: |
+          SELECT
+            SUM(CASE WHEN date_order >= date_trunc('quarter', NOW())
+                     THEN amount_total ELSE 0 END) AS current_quarter,
+            SUM(CASE WHEN date_order >= date_trunc('quarter', NOW()) - INTERVAL '1 year'
+                     AND date_order < date_trunc('quarter', NOW()) - INTERVAL '1 year' + INTERVAL '3 months'
+                     THEN amount_total ELSE 0 END) AS same_quarter_last_year
+          FROM sale_order
+          WHERE state IN ('sale','done');
+    tags: [multi_turn, comparison, yoy]
+
+  - id: L6-004
+    level: 6
+    domains: [logistics]
+    turns:
+      - nl: "List purchase orders this year."
+        gold_sql: |
+          SELECT id, name, amount_total, state
+          FROM purchase_order
+          WHERE date_order >= date_trunc('year', NOW())
+          ORDER BY id;
+      - nl: "Only the confirmed ones."
+        gold_sql: |
+          SELECT id, name, amount_total, state
+          FROM purchase_order
+          WHERE date_order >= date_trunc('year', NOW())
+            AND state IN ('purchase','done')
+          ORDER BY id;
+      - nl: "Sort by amount descending."
+        gold_sql: |
+          SELECT id, name, amount_total, state
+          FROM purchase_order
+          WHERE date_order >= date_trunc('year', NOW())
+            AND state IN ('purchase','done')
+          ORDER BY amount_total DESC NULLS LAST;
+    tags: [multi_turn, three_turn]
+
+  - id: L6-005
+    level: 6
+    domains: [inventory, demand]
+    turns:
+      - nl: "Show products with their total revenue this year."
+        gold_sql: |
+          SELECT pt.name->>'en_US' AS product, SUM(sol.price_subtotal) AS revenue
+          FROM sale_order_line sol
+          JOIN sale_order so ON so.id = sol.order_id
+          JOIN product_product pp ON pp.id = sol.product_id
+          JOIN product_template pt ON pt.id = pp.product_tmpl_id
+          WHERE so.state IN ('sale','done')
+            AND so.date_order >= date_trunc('year', NOW())
+          GROUP BY pt.name
+          ORDER BY revenue DESC NULLS LAST;
+      - nl: "Add their current stock quantity."
+        gold_sql: |
+          WITH rev AS (
+            SELECT pp.id AS product_id, pt.name->>'en_US' AS product,
+                   SUM(sol.price_subtotal) AS revenue
+            FROM sale_order_line sol
+            JOIN sale_order so ON so.id = sol.order_id
+            JOIN product_product pp ON pp.id = sol.product_id
+            JOIN product_template pt ON pt.id = pp.product_tmpl_id
+            WHERE so.state IN ('sale','done')
+              AND so.date_order >= date_trunc('year', NOW())
+            GROUP BY pp.id, pt.name
+          )
+          SELECT r.product, r.revenue, COALESCE(SUM(sq.quantity), 0) AS on_hand
+          FROM rev r
+          LEFT JOIN stock_quant sq ON sq.product_id = r.product_id
+          GROUP BY r.product, r.revenue
+          ORDER BY r.revenue DESC NULLS LAST;
+    tags: [multi_turn, augmentation]

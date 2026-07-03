@@ -1,0 +1,113 @@
+{"pair_id": "L1-001", "turn": 1, "level": 1, "domains": ["inventory"], "status": "pass", "row_count": 1, "elapsed_ms": 53, "error_message": ""}
+{"pair_id": "L1-002", "turn": 1, "level": 1, "domains": ["inventory"], "status": "pass", "row_count": 2, "elapsed_ms": 33, "error_message": ""}
+{"pair_id": "L1-003", "turn": 1, "level": 1, "domains": ["demand"], "status": "pass", "row_count": 1, "elapsed_ms": 70, "error_message": ""}
+{"pair_id": "L1-004", "turn": 1, "level": 1, "domains": ["demand"], "status": "pass", "row_count": 1, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L1-005", "turn": 1, "level": 1, "domains": ["finance"], "status": "pass", "row_count": 1, "elapsed_ms": 43, "error_message": ""}
+{"pair_id": "L1-006", "turn": 1, "level": 1, "domains": ["logistics"], "status": "pass", "row_count": 11, "elapsed_ms": 42, "error_message": ""}
+{"pair_id": "L1-007", "turn": 1, "level": 1, "domains": ["logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 37, "error_message": ""}
+{"pair_id": "L1-008", "turn": 1, "level": 1, "domains": ["inventory"], "status": "pass", "row_count": 1, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L1-009", "turn": 1, "level": 1, "domains": ["demand"], "status": "pass", "row_count": 1, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L1-010", "turn": 1, "level": 1, "domains": ["finance"], "status": "pass", "row_count": 1, "elapsed_ms": 54, "error_message": ""}
+{"pair_id": "L2-001", "turn": 1, "level": 2, "domains": ["inventory"], "status": "pass", "row_count": 51, "elapsed_ms": 70, "error_message": ""}
+{"pair_id": "L2-002", "turn": 1, "level": 2, "domains": ["inventory"], "status": "pass", "row_count": 2, "elapsed_ms": 41, "error_message": ""}
+{"pair_id": "L2-003", "turn": 1, "level": 2, "domains": ["demand"], "status": "pass", "row_count": 24, "elapsed_ms": 34, "error_message": ""}
+{"pair_id": "L2-004", "turn": 1, "level": 2, "domains": ["demand"], "status": "pass", "row_count": 3, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L2-005", "turn": 1, "level": 2, "domains": ["logistics"], "status": "pass", "row_count": 11, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L2-006", "turn": 1, "level": 2, "domains": ["logistics"], "status": "pass", "row_count": 28, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L2-007", "turn": 1, "level": 2, "domains": ["finance"], "status": "pass", "row_count": 23, "elapsed_ms": 46, "error_message": ""}
+{"pair_id": "L2-008", "turn": 1, "level": 2, "domains": ["finance"], "status": "pass", "row_count": 4, "elapsed_ms": 34, "error_message": ""}
+{"pair_id": "L2-009", "turn": 1, "level": 2, "domains": ["inventory"], "status": "pass", "row_count": 46, "elapsed_ms": 27, "error_message": ""}
+{"pair_id": "L2-010", "turn": 1, "level": 2, "domains": ["logistics"], "status": "pass", "row_count": 2, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L3-001", "turn": 1, "level": 3, "domains": ["finance", "demand"], "status": "pass", "row_count": 3, "elapsed_ms": 48, "error_message": ""}
+{"pair_id": "L3-002", "turn": 1, "level": 3, "domains": ["inventory", "demand"], "status": "pass", "row_count": 51, "elapsed_ms": 41, "error_message": ""}
+{"pair_id": "L3-003", "turn": 1, "level": 3, "domains": ["logistics", "finance"], "status": "pass", "row_count": 4, "elapsed_ms": 26, "error_message": ""}
+{"pair_id": "L3-004", "turn": 1, "level": 3, "domains": ["inventory", "logistics"], "status": "pass", "row_count": 20, "elapsed_ms": 46, "error_message": ""}
+{"pair_id": "L3-005", "turn": 1, "level": 3, "domains": ["finance", "demand"], "status": "pass", "row_count": 2, "elapsed_ms": 34, "error_message": ""}
+{"pair_id": "L3-006", "turn": 1, "level": 3, "domains": ["demand", "logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 25, "error_message": ""}
+{"pair_id": "L3-007", "turn": 1, "level": 3, "domains": ["inventory", "finance"], "status": "pass", "row_count": 1, "elapsed_ms": 33, "error_message": ""}
+{"pair_id": "L3-008", "turn": 1, "level": 3, "domains": ["demand", "logistics"], "status": "pass", "row_count": 10, "elapsed_ms": 34, "error_message": ""}
+{"pair_id": "L3-009", "turn": 1, "level": 3, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 35, "error_message": ""}
+{"pair_id": "L3-010", "turn": 1, "level": 3, "domains": ["inventory", "logistics"], "status": "pass", "row_count": 2, "elapsed_ms": 23, "error_message": ""}
+{"pair_id": "L3-011", "turn": 1, "level": 3, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L3-012", "turn": 1, "level": 3, "domains": ["demand", "finance"], "status": "pass", "row_count": 1, "elapsed_ms": 34, "error_message": ""}
+{"pair_id": "L3-013", "turn": 1, "level": 3, "domains": ["logistics", "inventory"], "status": "pass", "row_count": 2, "elapsed_ms": 30, "error_message": ""}
+{"pair_id": "L3-014", "turn": 1, "level": 3, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L3-015", "turn": 1, "level": 3, "domains": ["demand", "logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 29, "error_message": ""}
+{"pair_id": "L4-001", "turn": 1, "level": 4, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L4-002", "turn": 1, "level": 4, "domains": ["inventory", "finance"], "status": "pass", "row_count": 50, "elapsed_ms": 52, "error_message": ""}
+{"pair_id": "L4-003", "turn": 1, "level": 4, "domains": ["demand", "logistics", "finance"], "status": "pass", "row_count": 12, "elapsed_ms": 43, "error_message": ""}
+{"pair_id": "L4-004", "turn": 1, "level": 4, "domains": ["inventory", "demand"], "status": "pass", "row_count": 5, "elapsed_ms": 53, "error_message": ""}
+{"pair_id": "L4-005", "turn": 1, "level": 4, "domains": ["logistics", "finance"], "status": "pass", "row_count": 4, "elapsed_ms": 34, "error_message": ""}
+{"pair_id": "L5-001", "turn": 1, "level": 5, "domains": ["inventory", "demand"], "status": "pass", "row_count": 12, "elapsed_ms": 33, "error_message": ""}
+{"pair_id": "L5-002", "turn": 1, "level": 5, "domains": ["demand", "finance"], "status": "pass", "row_count": 1, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L5-003", "turn": 1, "level": 5, "domains": ["demand"], "status": "pass", "row_count": 3, "elapsed_ms": 26, "error_message": ""}
+{"pair_id": "L5-004", "turn": 1, "level": 5, "domains": ["logistics", "inventory"], "status": "pass", "row_count": 6, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L5-005", "turn": 1, "level": 5, "domains": ["finance", "demand", "inventory"], "status": "pass", "row_count": 10, "elapsed_ms": 30, "error_message": ""}
+{"pair_id": "L6-001", "turn": 1, "level": 6, "domains": ["demand"], "status": "pass", "row_count": 3, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L6-001", "turn": 2, "level": 6, "domains": ["demand"], "status": "pass", "row_count": 3, "elapsed_ms": 28, "error_message": ""}
+{"pair_id": "L6-002", "turn": 1, "level": 6, "domains": ["inventory"], "status": "pass", "row_count": 20, "elapsed_ms": 19, "error_message": ""}
+{"pair_id": "L6-002", "turn": 2, "level": 6, "domains": ["inventory"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 15, "error_message": ""}
+{"pair_id": "L6-003", "turn": 1, "level": 6, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 51, "error_message": ""}
+{"pair_id": "L6-003", "turn": 2, "level": 6, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 24, "error_message": ""}
+{"pair_id": "L6-004", "turn": 1, "level": 6, "domains": ["logistics"], "status": "pass", "row_count": 11, "elapsed_ms": 23, "error_message": ""}
+{"pair_id": "L6-004", "turn": 2, "level": 6, "domains": ["logistics"], "status": "pass", "row_count": 4, "elapsed_ms": 28, "error_message": ""}
+{"pair_id": "L6-004", "turn": 3, "level": 6, "domains": ["logistics"], "status": "pass", "row_count": 4, "elapsed_ms": 18, "error_message": ""}
+{"pair_id": "L6-005", "turn": 1, "level": 6, "domains": ["inventory", "demand"], "status": "pass", "row_count": 12, "elapsed_ms": 37, "error_message": ""}
+{"pair_id": "L6-005", "turn": 2, "level": 6, "domains": ["inventory", "demand"], "status": "pass", "row_count": 12, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L1-011", "turn": 1, "level": 1, "domains": ["inventory"], "status": "pass", "row_count": 5, "elapsed_ms": 10, "error_message": ""}
+{"pair_id": "L1-012", "turn": 1, "level": 1, "domains": ["logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 40, "error_message": ""}
+{"pair_id": "L1-013", "turn": 1, "level": 1, "domains": ["inventory"], "status": "pass", "row_count": 21, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L1-014", "turn": 1, "level": 1, "domains": ["inventory"], "status": "pass", "row_count": 1, "elapsed_ms": 24, "error_message": ""}
+{"pair_id": "L1-015", "turn": 1, "level": 1, "domains": ["finance"], "status": "pass", "row_count": 1, "elapsed_ms": 37, "error_message": ""}
+{"pair_id": "L1-016", "turn": 1, "level": 1, "domains": ["logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 26, "error_message": ""}
+{"pair_id": "L1-017", "turn": 1, "level": 1, "domains": ["demand"], "status": "pass", "row_count": 1, "elapsed_ms": 20, "error_message": ""}
+{"pair_id": "L1-018", "turn": 1, "level": 1, "domains": ["logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 25, "error_message": ""}
+{"pair_id": "L1-019", "turn": 1, "level": 1, "domains": ["demand"], "status": "pass", "row_count": 5, "elapsed_ms": 30, "error_message": ""}
+{"pair_id": "L1-020", "turn": 1, "level": 1, "domains": ["finance"], "status": "pass", "row_count": 2, "elapsed_ms": 29, "error_message": ""}
+{"pair_id": "L2-011", "turn": 1, "level": 2, "domains": ["inventory"], "status": "pass", "row_count": 46, "elapsed_ms": 27, "error_message": ""}
+{"pair_id": "L2-012", "turn": 1, "level": 2, "domains": ["demand"], "status": "pass", "row_count": 24, "elapsed_ms": 34, "error_message": ""}
+{"pair_id": "L2-013", "turn": 1, "level": 2, "domains": ["logistics"], "status": "pass", "row_count": 28, "elapsed_ms": 23, "error_message": ""}
+{"pair_id": "L2-014", "turn": 1, "level": 2, "domains": ["finance"], "status": "pass", "row_count": 4, "elapsed_ms": 29, "error_message": ""}
+{"pair_id": "L2-015", "turn": 1, "level": 2, "domains": ["inventory"], "status": "pass", "row_count": 10, "elapsed_ms": 29, "error_message": ""}
+{"pair_id": "L2-016", "turn": 1, "level": 2, "domains": ["demand"], "status": "pass", "row_count": 24, "elapsed_ms": 45, "error_message": ""}
+{"pair_id": "L2-017", "turn": 1, "level": 2, "domains": ["logistics"], "status": "pass", "row_count": 22, "elapsed_ms": 28, "error_message": ""}
+{"pair_id": "L2-018", "turn": 1, "level": 2, "domains": ["finance"], "status": "pass", "row_count": 23, "elapsed_ms": 46, "error_message": ""}
+{"pair_id": "L2-019", "turn": 1, "level": 2, "domains": ["inventory"], "status": "pass", "row_count": 5, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L2-020", "turn": 1, "level": 2, "domains": ["demand"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L3-016", "turn": 1, "level": 3, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 27, "error_message": ""}
+{"pair_id": "L3-017", "turn": 1, "level": 3, "domains": ["inventory", "logistics"], "status": "pass", "row_count": 51, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L3-018", "turn": 1, "level": 3, "domains": ["demand", "finance"], "status": "pass", "row_count": 2, "elapsed_ms": 35, "error_message": ""}
+{"pair_id": "L3-019", "turn": 1, "level": 3, "domains": ["finance", "demand"], "status": "pass", "row_count": 10, "elapsed_ms": 47, "error_message": ""}
+{"pair_id": "L3-020", "turn": 1, "level": 3, "domains": ["inventory", "demand"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 32, "error_message": ""}
+{"pair_id": "L3-021", "turn": 1, "level": 3, "domains": ["logistics", "demand"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 40, "error_message": ""}
+{"pair_id": "L3-022", "turn": 1, "level": 3, "domains": ["inventory", "finance"], "status": "pass", "row_count": 1, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L3-023", "turn": 1, "level": 3, "domains": ["finance", "logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 30, "error_message": ""}
+{"pair_id": "L3-024", "turn": 1, "level": 3, "domains": ["demand", "finance"], "status": "pass", "row_count": 2, "elapsed_ms": 39, "error_message": ""}
+{"pair_id": "L3-025", "turn": 1, "level": 3, "domains": ["inventory", "demand"], "status": "pass", "row_count": 39, "elapsed_ms": 29, "error_message": ""}
+{"pair_id": "L3-026", "turn": 1, "level": 3, "domains": ["logistics", "finance"], "status": "pass", "row_count": 2, "elapsed_ms": 26, "error_message": ""}
+{"pair_id": "L3-027", "turn": 1, "level": 3, "domains": ["demand", "logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 40, "error_message": ""}
+{"pair_id": "L3-028", "turn": 1, "level": 3, "domains": ["finance", "inventory"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 27, "error_message": ""}
+{"pair_id": "L3-029", "turn": 1, "level": 3, "domains": ["demand", "finance"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 24, "error_message": ""}
+{"pair_id": "L3-030", "turn": 1, "level": 3, "domains": ["inventory", "logistics"], "status": "pass", "row_count": 1, "elapsed_ms": 23, "error_message": ""}
+{"pair_id": "L4-006", "turn": 1, "level": 4, "domains": ["finance", "demand"], "status": "pass", "row_count": 12, "elapsed_ms": 47, "error_message": ""}
+{"pair_id": "L4-007", "turn": 1, "level": 4, "domains": ["inventory", "logistics"], "status": "pass", "row_count": 3, "elapsed_ms": 35, "error_message": ""}
+{"pair_id": "L4-008", "turn": 1, "level": 4, "domains": ["demand", "finance", "logistics"], "status": "pass", "row_count": 5, "elapsed_ms": 53, "error_message": ""}
+{"pair_id": "L4-009", "turn": 1, "level": 4, "domains": ["logistics", "inventory"], "status": "pass", "row_count": 4, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L4-010", "turn": 1, "level": 4, "domains": ["finance", "inventory"], "status": "pass", "row_count": 1, "elapsed_ms": 24, "error_message": ""}
+{"pair_id": "L5-006", "turn": 1, "level": 5, "domains": ["inventory", "logistics"], "status": "pass", "row_count": 4, "elapsed_ms": 45, "error_message": ""}
+{"pair_id": "L5-007", "turn": 1, "level": 5, "domains": ["demand", "finance"], "status": "pass", "row_count": 1, "elapsed_ms": 29, "error_message": ""}
+{"pair_id": "L5-008", "turn": 1, "level": 5, "domains": ["logistics", "inventory"], "status": "pass", "row_count": 2, "elapsed_ms": 28, "error_message": ""}
+{"pair_id": "L5-009", "turn": 1, "level": 5, "domains": ["logistics", "finance"], "status": "pass", "row_count": 4, "elapsed_ms": 30, "error_message": ""}
+{"pair_id": "L5-010", "turn": 1, "level": 5, "domains": ["finance", "demand"], "status": "pass", "row_count": 5, "elapsed_ms": 43, "error_message": ""}
+{"pair_id": "L6-006", "turn": 1, "level": 6, "domains": ["logistics"], "status": "pass", "row_count": 2, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L6-006", "turn": 2, "level": 6, "domains": ["logistics"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 30, "error_message": ""}
+{"pair_id": "L6-006", "turn": 3, "level": 6, "domains": ["logistics"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 20, "error_message": ""}
+{"pair_id": "L6-007", "turn": 1, "level": 6, "domains": ["inventory", "demand"], "status": "pass", "row_count": 6, "elapsed_ms": 53, "error_message": ""}
+{"pair_id": "L6-007", "turn": 2, "level": 6, "domains": ["inventory", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 31, "error_message": ""}
+{"pair_id": "L6-008", "turn": 1, "level": 6, "domains": ["demand", "finance"], "status": "pass", "row_count": 3, "elapsed_ms": 28, "error_message": ""}
+{"pair_id": "L6-008", "turn": 2, "level": 6, "domains": ["demand", "finance"], "status": "pass", "row_count": 3, "elapsed_ms": 28, "error_message": ""}
+{"pair_id": "L6-008", "turn": 3, "level": 6, "domains": ["demand", "finance"], "status": "pass", "row_count": 3, "elapsed_ms": 30, "error_message": ""}
+{"pair_id": "L6-009", "turn": 1, "level": 6, "domains": ["inventory"], "status": "pass", "row_count": 46, "elapsed_ms": 30, "error_message": ""}
+{"pair_id": "L6-009", "turn": 2, "level": 6, "domains": ["inventory"], "status": "pass-empty", "row_count": 0, "elapsed_ms": 46, "error_message": ""}
+{"pair_id": "L6-010", "turn": 1, "level": 6, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 39, "error_message": ""}
+{"pair_id": "L6-010", "turn": 2, "level": 6, "domains": ["finance", "demand"], "status": "pass", "row_count": 1, "elapsed_ms": 31, "error_message": ""}

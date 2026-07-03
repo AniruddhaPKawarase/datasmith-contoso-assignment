@@ -1,0 +1,88 @@
+# Few-shot examples for the Finance domain agent.
+# Account moves, multi-currency, taxes, payments.
+
+- query: Total revenue for the current fiscal year.
+  sql: |-
+    SELECT SUM(aml.credit - aml.debit) AS revenue
+    FROM account_move_line aml
+    JOIN account_account aa ON aa.id = aml.account_id
+    JOIN account_move am ON am.id = aml.move_id
+    WHERE aa.account_type = 'income'
+      AND am.state = 'posted'
+      AND am.date >= date_trunc('year', NOW());
+
+- query: Profit and loss summary by company for last quarter.
+  sql: |-
+    SELECT rc.name AS company,
+           SUM(CASE WHEN aa.account_type = 'income'  THEN aml.credit - aml.debit ELSE 0 END) AS revenue,
+           SUM(CASE WHEN aa.account_type LIKE 'expense%' THEN aml.debit - aml.credit ELSE 0 END) AS expense,
+           SUM(CASE WHEN aa.account_type = 'income'  THEN aml.credit - aml.debit ELSE 0 END)
+         - SUM(CASE WHEN aa.account_type LIKE 'expense%' THEN aml.debit - aml.credit ELSE 0 END) AS profit
+    FROM account_move_line aml
+    JOIN account_move am ON am.id = aml.move_id
+    JOIN account_account aa ON aa.id = aml.account_id
+    JOIN res_company rc ON rc.id = am.company_id
+    WHERE am.state = 'posted'
+      AND am.date >= date_trunc('quarter', NOW() - INTERVAL '3 months')
+      AND am.date <  date_trunc('quarter', NOW())
+    GROUP BY rc.name;
+
+- query: Outstanding receivables by customer.
+  sql: |-
+    SELECT rp.name AS customer, SUM(am.amount_residual) AS outstanding
+    FROM account_move am
+    JOIN res_partner rp ON rp.id = am.partner_id
+    WHERE am.move_type = 'out_invoice'
+      AND am.payment_state IN ('not_paid', 'partial', 'in_payment')
+      AND am.state = 'posted'
+    GROUP BY rp.name
+    ORDER BY outstanding DESC;
+
+- query: Convert all currency amounts to USD for invoices last month.
+  sql: |-
+    SELECT am.name, am.date, rc.name AS currency,
+           am.amount_total,
+           am.amount_total * COALESCE(rcr.inverse_company_rate, 1) AS amount_total_usd
+    FROM account_move am
+    JOIN res_currency rc ON rc.id = am.currency_id
+    LEFT JOIN res_currency_rate rcr
+           ON rcr.currency_id = rc.id
+          AND rcr.name <= am.date
+    WHERE am.state = 'posted'
+      AND am.date >= date_trunc('month', NOW() - INTERVAL '1 month')
+      AND am.date <  date_trunc('month', NOW())
+    ORDER BY am.date;
+
+- query: Tax collected by tax code this year.
+  sql: |-
+    SELECT at.name AS tax, SUM(aml.balance) AS amount
+    FROM account_move_line aml
+    JOIN account_tax at ON at.id = aml.tax_line_id
+    JOIN account_move am ON am.id = aml.move_id
+    WHERE am.state = 'posted'
+      AND am.date >= date_trunc('year', NOW())
+    GROUP BY at.name
+    ORDER BY amount DESC;
+
+- query: Top 10 customers by total invoiced value all-time.
+  sql: |-
+    SELECT rp.name AS customer, SUM(am.amount_total_signed) AS total_invoiced
+    FROM account_move am
+    JOIN res_partner rp ON rp.id = am.partner_id
+    WHERE am.move_type = 'out_invoice'
+      AND am.state = 'posted'
+    GROUP BY rp.name
+    ORDER BY total_invoiced DESC
+    LIMIT 10;
+
+- query: Average days to pay an invoice by customer.
+  sql: |-
+    SELECT rp.name AS customer,
+           AVG(EXTRACT(EPOCH FROM (ap.date - am.invoice_date)) / 86400) AS avg_days_to_pay
+    FROM account_payment ap
+    JOIN account_move am ON am.id = ap.move_id
+    JOIN res_partner rp ON rp.id = am.partner_id
+    WHERE am.move_type = 'out_invoice'
+      AND ap.state = 'paid'
+    GROUP BY rp.name
+    ORDER BY avg_days_to_pay DESC;

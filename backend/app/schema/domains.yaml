@@ -1,0 +1,152 @@
+# ─────────────────────────────────────────────────────────────────────
+# Domain-to-Schema Mapping — Contoso variant
+# ─────────────────────────────────────────────────────────────────────
+# Single-specialist strategy: the Contoso Retail DW has a coherent
+# sales-analytics purpose across all 15 curated tables. Rather than
+# artificially fragmenting a star schema across 5 specialists, we route
+# every Contoso query to the demand specialist, which owns all tables.
+#
+# The other domain enums (inventory / logistics / finance / compliance)
+# are kept with empty primary tables so the enum-driven code continues
+# to load, but the Router will never dispatch to them (its prompt
+# lists only "demand" as an active domain).
+# ─────────────────────────────────────────────────────────────────────
+
+version: 1
+schema_source: backend/data/contoso_schema.json
+
+domains:
+  demand:
+    description: >
+      All Contoso sales analytics: online + reseller channel sales,
+      sales quota vs. attainment, customer demographics, product
+      hierarchy, sales territories, employee assignments, dates.
+
+      CRITICAL DATA-SHAPE RULES (must follow — schema-specific facts,
+      not query semantics):
+        1. `datekey` in every table is TEXT storing an ISO date
+           ("2009-01-15"). NEVER compare it to a DATE literal
+           (`datekey >= DATE '...'` errors). To filter by year use
+           `dd.calendaryear = 2009`; by month `dd.monthnumber = 3`;
+           by quarter `dd.calendarquarterlabel = 'Q2'`.
+        2. Fact tables span 2007-01-01 to 2009-12-31 only. Do not
+           filter by years outside 2007-2009 — result will be empty.
+        3. `factonlinesales.salesamount` is the internet-channel
+           revenue column. `factsales.salesamount` is the retail /
+           reseller channel. If the user says "revenue" with no
+           channel specified, prefer factonlinesales (broader coverage)
+           unless the router already emitted a clarification.
+        4. Column names in Contoso are lowercase (postgres was loaded
+           that way). Match exactly: `productkey`, `productcategoryname`,
+           `salesterritoryregion`, `firstname`, `lastname`.
+        5. `dimcustomer` is B2C individuals. It has `firstname` +
+           `lastname` — there is NO `companyname`, NO `customername`,
+           NO `company`. Concatenate `firstname || ' ' || lastname` for
+           a display name. PK is `customerkey`.
+        6. `dimemployee` PK is `employeekey` (NOT `employeeid`).
+           Employee display name is `firstname || ' ' || lastname`.
+           `factsalesquota` joins on `employeekey`. Employees have no
+           direct `salesterritorykey` — go via `dimsalesterritory`
+           where `employeekey` is a nullable FK back to dimemployee.
+        7. `dimsalesterritory.salesterritorygroup` takes exactly THREE
+           values: `Asia`, `Europe`, `North America`. There is NO
+           "Pacific", "APAC", "LATAM" group. If the user says "Pacific",
+           "APAC", or "Asia-Pacific" → filter
+           `salesterritorygroup = 'Asia'`.
+        8. `factonlinesales` has NO `orderid` — the grain is order-line.
+           An "order" is a unique
+           `(datekey, customerkey, storekey, currencykey)` tuple;
+           `COUNT(DISTINCT ...)` on that combination approximates orders.
+           There is NO ship / delivery event in the dataset.
+        9. `factsalesquota` quota columns are LONG NAMES:
+           `salesamountquota` (revenue quota),
+           `salesquantityquota` (unit quota), and
+           `grossmarginquota` (margin quota). There is NO shorter
+           `salesquota` column. To compare actuals vs. quota, JOIN
+           factsalesquota to factsales on
+           `(storekey, productkey, datekey)` after aggregating both
+           sides to the quota grain.
+    primary:
+      - factonlinesales
+      - factsales
+      - factsalesquota
+      - dimcustomer
+      - dimdate
+      - dimemployee
+      - dimproduct
+      - dimproductcategory
+      - dimproductsubcategory
+      - dimsalesterritory
+      - dimstore
+      - dimchannel
+      - dimpromotion
+      - dimcurrency
+      - dimgeography
+    keywords:
+      - sales
+      - revenue
+      - customer
+      - product
+      - territory
+      - region
+      - quota
+      - attainment
+      - channel
+      - internet
+      - reseller
+      - online
+      - order
+      - trend
+      - top
+      - ranking
+      - lifetime value
+      - LTV
+      - AOV
+      - average order value
+      - funnel
+      - demographic
+      - month-over-month
+      - year-over-year
+
+  # Retained (empty) so the Domain enum still loads — Router never
+  # picks these because keywords list is empty and primary is empty.
+  inventory:
+    description: (not used for Contoso — see demand)
+    primary: []
+    keywords: []
+  logistics:
+    description: (not used for Contoso — see demand)
+    primary: []
+    keywords: []
+  finance:
+    description: (not used for Contoso — see demand)
+    primary: []
+    keywords: []
+  compliance:
+    description: (cross-cutting; disabled for Contoso — no RBAC scenarios)
+    primary: []
+    keywords: []
+    cross_cutting: true
+
+# ─────────────────────────────────────────────────────────────────────
+# Shared entities — Contoso has no meaningful cross-domain sharing
+# since one specialist owns everything.
+# ─────────────────────────────────────────────────────────────────────
+shared: {}
+
+# ─────────────────────────────────────────────────────────────────────
+# Prefix rules for auto-assigning tables to domains via naming.
+# All Contoso tables start with `dim` or `fact` and belong to demand.
+# ─────────────────────────────────────────────────────────────────────
+prefix_rules:
+  demand:
+    - dim
+    - fact
+
+# ─────────────────────────────────────────────────────────────────────
+# Exclusions — Contoso has none in the curated 15-table load.
+# ─────────────────────────────────────────────────────────────────────
+excluded_prefixes: []
+
+join_suffixes: []
+wizard_suffixes: []

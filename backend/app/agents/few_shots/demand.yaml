@@ -1,0 +1,114 @@
+# Few-shot examples for the Contoso demand-specialist agent.
+# Covers the 7 query classes in the assignment PDF §3.1 plus a mixed-panel
+# example (TC08). Each example uses the ACTUAL Contoso Retail DW table
+# names (factonlinesales, factsales, dimsalesterritory, etc.).
+
+- query: Show monthly revenue for 2013 by region.
+  sql: |-
+    SELECT
+      dd.calendaryear AS year,
+      dd.monthnumber AS month,
+      dst.salesterritoryregion AS region,
+      SUM(fos.salesamount) AS revenue
+    FROM factonlinesales fos
+    JOIN dimdate dd  ON dd.datekey = fos.datekey
+    JOIN dimcustomer dc ON dc.customerkey = fos.customerkey
+    JOIN dimgeography dg ON dg.geographykey = dc.geographykey
+    JOIN dimsalesterritory dst ON dst.geographykey = dg.geographykey
+    WHERE dd.calendaryear = 2013
+    GROUP BY dd.calendaryear, dd.monthnumber, dst.salesterritoryregion
+    ORDER BY dd.monthnumber, dst.salesterritoryregion;
+
+- query: Who are our top 10 customers by lifetime value?
+  sql: |-
+    SELECT
+      dc.customerkey,
+      COALESCE(dc.companyname, dc.firstname || ' ' || dc.lastname) AS customer,
+      COUNT(DISTINCT fos.salesordernumber) AS orders,
+      SUM(fos.salesamount) AS total_spend
+    FROM factonlinesales fos
+    JOIN dimcustomer dc ON dc.customerkey = fos.customerkey
+    GROUP BY dc.customerkey, dc.companyname, dc.firstname, dc.lastname
+    ORDER BY total_spend DESC
+    LIMIT 10;
+
+- query: Compare internet vs reseller channel sales by product category.
+  sql: |-
+    WITH internet AS (
+      SELECT dpc.productcategoryname AS category, SUM(fos.salesamount) AS revenue
+      FROM factonlinesales fos
+      JOIN dimproduct dp ON dp.productkey = fos.productkey
+      JOIN dimproductsubcategory dps ON dps.productsubcategorykey = dp.productsubcategorykey
+      JOIN dimproductcategory dpc ON dpc.productcategorykey = dps.productcategorykey
+      GROUP BY dpc.productcategoryname
+    ),
+    reseller AS (
+      SELECT dpc.productcategoryname AS category, SUM(fs.salesamount) AS revenue
+      FROM factsales fs
+      JOIN dimproduct dp ON dp.productkey = fs.productkey
+      JOIN dimproductsubcategory dps ON dps.productsubcategorykey = dp.productsubcategorykey
+      JOIN dimproductcategory dpc ON dpc.productcategorykey = dps.productcategorykey
+      GROUP BY dpc.productcategoryname
+    )
+    SELECT
+      COALESCE(i.category, r.category) AS category,
+      COALESCE(i.revenue, 0)           AS internet_revenue,
+      COALESCE(r.revenue, 0)           AS reseller_revenue
+    FROM internet i FULL OUTER JOIN reseller r ON i.category = r.category
+    ORDER BY (COALESCE(i.revenue, 0) + COALESCE(r.revenue, 0)) DESC;
+
+- query: What is the average order value trend over the last 3 years by product line?
+  sql: |-
+    SELECT
+      dd.calendaryear AS year,
+      dpc.productcategoryname AS product_line,
+      SUM(fos.salesamount) / NULLIF(COUNT(DISTINCT fos.salesordernumber), 0) AS avg_order_value
+    FROM factonlinesales fos
+    JOIN dimdate dd ON dd.datekey = fos.datekey
+    JOIN dimproduct dp ON dp.productkey = fos.productkey
+    JOIN dimproductsubcategory dps ON dps.productsubcategorykey = dp.productsubcategorykey
+    JOIN dimproductcategory dpc ON dpc.productcategorykey = dps.productcategorykey
+    WHERE dd.calendaryear >= EXTRACT(YEAR FROM CURRENT_DATE)::int - 3
+    GROUP BY dd.calendaryear, dpc.productcategoryname
+    ORDER BY dpc.productcategoryname, dd.calendaryear;
+
+- query: Which products have declining sales in the last 2 quarters?
+  sql: |-
+    WITH quarterly AS (
+      SELECT
+        dp.productkey,
+        dp.productname,
+        dd.calendaryear AS year,
+        dd.calendarquarterlabel AS quarter,
+        SUM(fos.salesamount) AS revenue
+      FROM factonlinesales fos
+      JOIN dimdate dd ON dd.datekey = fos.datekey
+      JOIN dimproduct dp ON dp.productkey = fos.productkey
+      GROUP BY dp.productkey, dp.productname, dd.calendaryear, dd.calendarquarterlabel
+    ),
+    ranked AS (
+      SELECT *, LAG(revenue) OVER (PARTITION BY productkey ORDER BY year, quarter) AS prev_revenue
+      FROM quarterly
+    )
+    SELECT productname, year, quarter, revenue, prev_revenue,
+           (revenue - prev_revenue) AS delta
+    FROM ranked
+    WHERE prev_revenue IS NOT NULL
+      AND revenue < prev_revenue
+    ORDER BY delta ASC
+    LIMIT 20;
+
+- query: Give me a full customer demographic breakdown for the Pacific region.
+  sql: |-
+    SELECT
+      dc.gender,
+      dc.yearlyincome,
+      dc.education,
+      dc.maritalstatus,
+      COUNT(*) AS customer_count
+    FROM dimcustomer dc
+    JOIN dimgeography dg ON dg.geographykey = dc.geographykey
+    JOIN dimsalesterritory dst ON dst.geographykey = dg.geographykey
+    WHERE dst.salesterritoryregion = 'Pacific'
+    GROUP BY dc.gender, dc.yearlyincome, dc.education, dc.maritalstatus
+    ORDER BY customer_count DESC;

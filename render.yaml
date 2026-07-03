@@ -1,0 +1,66 @@
+# Render Blueprint for the SCM-Contoso backend.
+# Deploy: (1) push this repo to GitHub, (2) create a new Render Blueprint from
+# the dashboard pointed at the repo. Render reads this file and provisions
+# both the web service and the Postgres addon in one click.
+#
+# NOTE: Render's free Postgres tier is 256 MB. Full Contoso doesn't fit;
+# either use `starter` tier ($7/mo, 1 GB), OR point at an external Neon
+# Postgres and remove the `databases:` block below.
+
+services:
+  - type: web
+    name: scm-contoso-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /healthz
+    envVars:
+      - key: RENDER
+        value: "true"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      # Postgres — populated from the linked database below.
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: contoso-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: contoso-db
+          property: port
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: contoso-db
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: contoso-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: contoso-db
+          property: password
+      # LLM — set these in the Render dashboard (do NOT commit real values).
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: LLM_PROVIDER
+        value: openai
+      - key: LLM_MODEL_ROUTER
+        value: gpt-4o-mini
+      - key: LLM_MODEL_SQL_GEN
+        value: gpt-4o-mini
+      - key: LLM_MODEL_VALIDATOR
+        value: gpt-4o-mini
+      - key: LLM_MODEL_VIZ_SELECTOR
+        value: gpt-4o-mini
+      # Frontend origin — set to your Vercel URL once the frontend is live.
+      - key: ALLOWED_ORIGIN
+        sync: false
+
+databases:
+  - name: contoso-db
+    plan: free
+    databaseName: contoso
+    user: contoso_reader
+    postgresMajorVersion: 15

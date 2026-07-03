@@ -1,0 +1,92 @@
+# Few-shot examples for the Inventory domain agent.
+# Each example MUST reference only tables in the agent's visible_tables set.
+# Style: bare PostgreSQL, single statement, no markdown fences.
+
+- query: How much stock do we have for product 'Office Chair'?
+  sql: |-
+    SELECT pp.id, pt.name->>'en_US' AS product, SUM(sq.quantity) AS on_hand
+    FROM stock_quant sq
+    JOIN product_product pp ON pp.id = sq.product_id
+    JOIN product_template pt ON pt.id = pp.product_tmpl_id
+    WHERE pt.name->>'en_US' = 'Office Chair'
+    GROUP BY pp.id, pt.name;
+
+- query: List all warehouses and their stock locations.
+  sql: |-
+    SELECT w.id, w.name AS warehouse, l.id AS location_id, l.complete_name AS location
+    FROM stock_warehouse w
+    JOIN stock_location l ON l.id = w.view_location_id OR l.location_id = w.view_location_id
+    ORDER BY w.id, l.complete_name;
+
+- query: Which products are below their safety stock level?
+  sql: |-
+    SELECT pt.name->>'en_US' AS product, op.product_min_qty AS min_qty,
+           COALESCE(SUM(sq.quantity), 0) AS on_hand
+    FROM stock_warehouse_orderpoint op
+    JOIN product_product pp ON pp.id = op.product_id
+    JOIN product_template pt ON pt.id = pp.product_tmpl_id
+    LEFT JOIN stock_quant sq ON sq.product_id = pp.id
+    GROUP BY pt.name, op.product_min_qty
+    HAVING COALESCE(SUM(sq.quantity), 0) < op.product_min_qty;
+
+- query: Total inventory value by warehouse.
+  sql: |-
+    SELECT w.name AS warehouse, SUM(svl.value) AS inventory_value
+    FROM stock_valuation_layer svl
+    JOIN stock_move sm ON sm.id = svl.stock_move_id
+    JOIN stock_location l ON l.id = sm.location_dest_id
+    JOIN stock_warehouse w ON w.view_location_id = l.location_id
+    GROUP BY w.name;
+
+- query: Show me stock movements in the last 30 days for a given product id.
+  sql: |-
+    SELECT sm.id, sm.date, sm.product_qty, lsrc.complete_name AS source,
+           ldst.complete_name AS destination, sm.state
+    FROM stock_move sm
+    JOIN stock_location lsrc ON lsrc.id = sm.location_id
+    JOIN stock_location ldst ON ldst.id = sm.location_dest_id
+    WHERE sm.product_id = :product_id
+      AND sm.date >= NOW() - INTERVAL '30 days'
+    ORDER BY sm.date DESC;
+
+- query: Number of products per category.
+  sql: |-
+    SELECT pc.complete_name AS category, COUNT(pt.id) AS product_count
+    FROM product_template pt
+    JOIN product_category pc ON pc.id = pt.categ_id
+    GROUP BY pc.complete_name
+    ORDER BY product_count DESC;
+
+- query: Top 10 fastest-moving products by units shipped this year.
+  sql: |-
+    SELECT pt.name->>'en_US' AS product, SUM(sm.product_qty) AS units_shipped
+    FROM stock_move sm
+    JOIN product_product pp ON pp.id = sm.product_id
+    JOIN product_template pt ON pt.id = pp.product_tmpl_id
+    JOIN stock_location ldst ON ldst.id = sm.location_dest_id
+    WHERE sm.state = 'done'
+      AND ldst.usage = 'customer'
+      AND sm.date >= date_trunc('year', NOW())
+    GROUP BY pt.name
+    ORDER BY units_shipped DESC
+    LIMIT 10;
+
+- query: Warehouses with currently empty locations.
+  sql: |-
+    SELECT w.name AS warehouse, COUNT(*) AS empty_locations
+    FROM stock_location l
+    JOIN stock_warehouse w ON w.view_location_id = l.location_id
+    LEFT JOIN stock_quant sq ON sq.location_id = l.id AND sq.quantity > 0
+    WHERE l.usage = 'internal' AND sq.id IS NULL
+    GROUP BY w.name;
+
+# Hierarchical aggregation (Phase 6.3) — drill-down across company > warehouse > location.
+- query: Inventory on-hand rolled up by company and warehouse.
+  sql: |-
+    SELECT rc.name AS company, w.name AS warehouse,
+           SUM(sq.quantity) AS on_hand
+    FROM stock_quant sq
+    JOIN stock_warehouse w ON w.id = sq.warehouse_id
+    JOIN res_company rc ON rc.id = sq.company_id
+    GROUP BY ROLLUP (rc.name, w.name)
+    ORDER BY rc.name NULLS LAST, w.name NULLS LAST;
