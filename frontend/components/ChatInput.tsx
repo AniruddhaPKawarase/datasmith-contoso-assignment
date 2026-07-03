@@ -11,8 +11,8 @@ type Props = {
 const SAMPLE_QUERIES = [
   "Show monthly revenue for 2009 by region",
   "Who are our top 10 customers by lifetime value?",
+  "Show revenue by product category for 2009",
   "Show me a sales funnel: orders → shipped → revenue by territory",
-  "Give me a full customer demographic breakdown for the Pacific region",
 ];
 
 export function ChatInput({ onSend, disabled }: Props) {

@@ -125,9 +125,12 @@ def _demographic_breakdown_plan(query: str) -> list[PlanStep]:
             name="by_gender",
             natural_language=(
                 f"Count customers by gender for customers whose sales "
-                f"territory group is '{group}'. Join dimcustomer to "
-                f"dimgeography on geographykey and dimgeography to "
-                f"dimsalesterritory on salesterritorykey; filter where "
+                f"territory group is '{group}'. IMPORTANT join graph: "
+                f"dimcustomer dc JOIN dimgeography dg ON "
+                f"dc.geographykey = dg.geographykey, then JOIN "
+                f"dimsalesterritory dst ON dst.geographykey = "
+                f"dg.geographykey (dimgeography has NO salesterritorykey; "
+                f"dst also points at dg via geographykey). Filter where "
                 f"{filter_clause}."
             ),
             rationale=f"Gender share pie for {group} group.",
@@ -138,8 +141,10 @@ def _demographic_breakdown_plan(query: str) -> list[PlanStep]:
             natural_language=(
                 f"Count customers by yearlyincome bucket (Low <30k, "
                 f"Mid 30-60k, High 60k+) for customers whose sales "
-                f"territory group is '{group}' (join via dimgeography "
-                f"and dimsalesterritory; filter {filter_clause})."
+                f"territory group is '{group}'. Join dc→dg→dst all via "
+                f"geographykey (dc.geographykey=dg.geographykey AND "
+                f"dst.geographykey=dg.geographykey; NO salesterritorykey "
+                f"on dg). Filter {filter_clause}."
             ),
             rationale=f"Income distribution bar chart for {group} group.",
         ),
@@ -148,9 +153,10 @@ def _demographic_breakdown_plan(query: str) -> list[PlanStep]:
             name="by_education",
             natural_language=(
                 f"Count customers by education level for customers "
-                f"whose sales territory group is '{group}' (join via "
-                f"dimgeography and dimsalesterritory; filter "
-                f"{filter_clause})."
+                f"whose sales territory group is '{group}'. Join dc→dg→dst "
+                f"all via geographykey (dc.geographykey=dg.geographykey "
+                f"AND dst.geographykey=dg.geographykey). Filter "
+                f"{filter_clause}."
             ),
             rationale=f"Education breakdown bar chart for {group} group.",
         ),
