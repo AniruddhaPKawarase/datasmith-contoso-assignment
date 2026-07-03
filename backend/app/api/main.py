@@ -191,7 +191,7 @@ async def _run_one(
                 psycopg.connect(**pg_cfg, connect_timeout=10) as conn,
                 conn.cursor() as cur,
             ):
-                cur.execute("SET LOCAL statement_timeout = 30000")
+                cur.execute(f"SET statement_timeout = {os.getenv('DB_STATEMENT_TIMEOUT_MS', '60000')}")
                 cur.execute(sql.rstrip().rstrip(";"))
                 col_names = [d[0] for d in cur.description] if cur.description else []
                 raw_rows = cur.fetchmany(100)
