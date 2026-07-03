@@ -181,6 +181,11 @@ async def _run_one(
                 "dbname": os.getenv("POSTGRES_DB", "contoso"),
                 "user": os.getenv("POSTGRES_USER", "contoso_reader"),
                 "password": os.getenv("POSTGRES_PASSWORD", "contoso_read_only"),
+                # sslmode: CockroachDB requires TLS; local Postgres accepts
+                # 'prefer' and falls back to plain. `verify-full` needs a
+                # CA bundle so we default to `require` (encrypted but no
+                # cert verification) — good enough for a demo.
+                "sslmode": os.getenv("POSTGRES_SSLMODE", "prefer"),
             }
             with (
                 psycopg.connect(**pg_cfg, connect_timeout=10) as conn,
