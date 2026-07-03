@@ -6,13 +6,15 @@ Conversational analyst for the **Cleaned Microsoft Contoso** star schema, submit
 **Live API:** https://scm-contoso-api.onrender.com/healthz
 **3-min walkthrough:** _`(Loom URL — added after recording)`_
 
-> **Live-stack smoke result (2026-07-03, full 22.8M-row CockroachDB backend):**
+> **Verbatim PDF 8-TC run (2026-07-03, full 22.8 M-row CockroachDB):** **4 PASS + 2 PARTIAL + 2 FAIL** — see [`docs/test_case_matrix.md`](docs/test_case_matrix.md) for per-TC SQL and analysis. Total OpenAI cost across the 8 TCs: **$0.07**.
+>
+> **UI sample-query smoke:**
 > - Monthly revenue for 2009 by region — 100 rows, line chart, 28s, $0.006
 > - Top 10 customers by lifetime value — 10 rows, bar chart, 38s, $0.005
 > - Revenue by product category for 2009 — 8 rows, bar chart, 25s, $0.005
 > - Revenue by territory group for 2009 — 3 rows, bar chart, 24s, $0.005
 >
-> Total demo cost: **$0.02** end-to-end. Backend hits **12.03 M-row `factonlinesales`**, **3.4 M-row `factsales`**, **7.37 M-row `factsalesquota`** live on every request — no caching, no pre-aggregation.
+> Backend hits **12.03 M-row `factonlinesales`**, **3.4 M-row `factsales`**, **7.37 M-row `factsalesquota`** live on every request — no caching, no pre-aggregation.
 
 ## What it does
 
