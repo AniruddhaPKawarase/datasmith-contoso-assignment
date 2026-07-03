@@ -9,10 +9,10 @@ type Props = {
 };
 
 const SAMPLE_QUERIES = [
-  "How many products do we have in total?",
-  "Compare total revenue this quarter with on-hand inventory value, by company.",
-  "Show top customers by revenue this quarter.",
-  "What is the lead time for our Asian suppliers?",
+  "Show monthly revenue for 2009 by region",
+  "Who are our top 10 customers by lifetime value?",
+  "Show me a sales funnel: orders → shipped → revenue by territory",
+  "Give me a full customer demographic breakdown for the Pacific region",
 ];
 
 export function ChatInput({ onSend, disabled }: Props) {

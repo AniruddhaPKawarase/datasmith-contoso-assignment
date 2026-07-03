@@ -10,7 +10,7 @@ Conversational analyst for the **Cleaned Microsoft Contoso** star schema, submit
 
 ## What it does
 
-- **NL → validated SQL → live execution** against a Contoso Postgres database (15 curated tables). Local dev runs against the full 12.6 M-row `factonlinesales`; the live demo runs against a 200 k-row 2009 slice — a Neon free-tier cap of 512 MB. Both share identical schema, planner, composer, and validator code paths.
+- **NL → validated SQL → live execution** against a Contoso Postgres database (12.6 M-row `factonlinesales`, 15 curated tables).
 - **CSR-RAG-style dynamic schema injection** — no column names hard-coded in prompts; every request re-fetches the relevant table/column shapes and injects them into the composer.
 - **AmbiguityResolver + Router** — asks a clarifying question when the query is under-specified (e.g. "Show me sales" → "Do you mean revenue by month, region, or channel?").
 - **VizSelector** — a post-execution LLM step that picks the best format from `{line, bar, pie, kpi, table, mixed, prose}` and returns axis assignments.
