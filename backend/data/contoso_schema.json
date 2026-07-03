@@ -1,0 +1,1996 @@
+{
+  "database": "contoso",
+  "schema": "public",
+  "extracted_at": "2026-07-02T16:41:38+00:00",
+  "table_count": 15,
+  "total_columns": 170,
+  "total_foreign_keys": 23,
+  "tables": [
+    {
+      "name": "dimchannel",
+      "columns": [
+        {
+          "name": "channelkey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "channelname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "channeldescription",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 4
+    },
+    {
+      "name": "dimcurrency",
+      "columns": [
+        {
+          "name": "currencykey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "currencyname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "currencydescription",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 28
+    },
+    {
+      "name": "dimcustomer",
+      "columns": [
+        {
+          "name": "unnamed: 0",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "customerkey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "geographykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "firstname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "lastname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "birthdate",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "maritalstatus",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "gender",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "yearlyincome",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "totalchildren",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "numberchildrenathome",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "education",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "occupation",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "houseownerflag",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "numbercarsowned",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [
+        {
+          "from_column": "geographykey",
+          "to_table": "dimgeography",
+          "to_column": "geographykey",
+          "constraint_name": "fk_dc_geography"
+        }
+      ],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 18869
+    },
+    {
+      "name": "dimdate",
+      "columns": [
+        {
+          "name": "datekey",
+          "data_type": "text",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "calendaryear",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "calendaryearlabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "calendarhalfyearlabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "calendarquarterlabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "calendarmonthlabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "calendarweeklabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "calendardayofweeklabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "fiscalyear",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "fiscalyearlabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "fiscalhalfyearlabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "fiscalquarterlabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "fiscalmonthlabel",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "isworkday",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "isholiday",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "europeseason",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "northamericaseason",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "asiaseason",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "monthnumber",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "calendardayofweeknumber",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 2556
+    },
+    {
+      "name": "dimemployee",
+      "columns": [
+        {
+          "name": "employeekey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "parentemployeekey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "firstname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "lastname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "title",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "hiredate",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "birthdate",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "emailaddress",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "phone",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "emergencycontactname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "emergencycontactphone",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "gender",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "payfrequency",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "baserate",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "vacationhours",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "departmentname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "startdate",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salarystatus",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "issalesperson",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "ismarried",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 293
+    },
+    {
+      "name": "dimgeography",
+      "columns": [
+        {
+          "name": "geographykey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "geographytype",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "continentname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "cityname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "stateprovincename",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "regioncountryname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 674
+    },
+    {
+      "name": "dimproduct",
+      "columns": [
+        {
+          "name": "productkey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productdescription",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productsubcategorykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "manufacturer",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "brandname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "classid",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "classname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "styleid",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "stylename",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "colorid",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "colorname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "weight",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "weightunitmeasureid",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "unitofmeasureid",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "unitofmeasurename",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "stocktypeid",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "stocktypename",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "unitcost",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "unitprice",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "availableforsaledate",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [
+        {
+          "from_column": "productsubcategorykey",
+          "to_table": "dimproductsubcategory",
+          "to_column": "productsubcategorykey",
+          "constraint_name": "fk_dp_subcategory"
+        }
+      ],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 2233
+    },
+    {
+      "name": "dimproductcategory",
+      "columns": [
+        {
+          "name": "productcategorykey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productcategoryname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 8
+    },
+    {
+      "name": "dimproductsubcategory",
+      "columns": [
+        {
+          "name": "productsubcategorykey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productsubcategoryname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productcategorykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [
+        {
+          "from_column": "productcategorykey",
+          "to_table": "dimproductcategory",
+          "to_column": "productcategorykey",
+          "constraint_name": "fk_dps_category"
+        }
+      ],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 44
+    },
+    {
+      "name": "dimpromotion",
+      "columns": [
+        {
+          "name": "promotionkey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "promotionname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "discountpercent",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "promotiontype",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "promotioncategory",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 28
+    },
+    {
+      "name": "dimsalesterritory",
+      "columns": [
+        {
+          "name": "salesterritorykey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "geographykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesterritoryname",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesterritoryregion",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesterritorycountry",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesterritorygroup",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesterritorylevel",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesterritorymanager",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "employeekey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [
+        {
+          "from_column": "employeekey",
+          "to_table": "dimemployee",
+          "to_column": "employeekey",
+          "constraint_name": "fk_dst_employee"
+        },
+        {
+          "from_column": "geographykey",
+          "to_table": "dimgeography",
+          "to_column": "geographykey",
+          "constraint_name": "fk_dst_geography"
+        }
+      ],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 265
+    },
+    {
+      "name": "dimstore",
+      "columns": [
+        {
+          "name": "storekey",
+          "data_type": "bigint",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "geographykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "storemanager",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "storetype",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "storename",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "opendate",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "closedate",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "entitykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "storephone",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "storefax",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "closereason",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "employeecount",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "sellingareasize",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "lastremodeldate",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "employeekey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [
+        {
+          "from_column": "geographykey",
+          "to_table": "dimgeography",
+          "to_column": "geographykey",
+          "constraint_name": "fk_ds_geography"
+        }
+      ],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 306
+    },
+    {
+      "name": "factonlinesales",
+      "columns": [
+        {
+          "name": "onlinesaleskey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "datekey",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "storekey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productkey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "promotionkey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "currencykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "customerkey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesordernumber",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesorderlinenumber",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesquantity",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesamount",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "returnquantity",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "returnamount",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "discountquantity",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "discountamount",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "totalcost",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "unitcost",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "unitprice",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [
+        {
+          "from_column": "currencykey",
+          "to_table": "dimcurrency",
+          "to_column": "currencykey",
+          "constraint_name": "fk_fos_currency"
+        },
+        {
+          "from_column": "customerkey",
+          "to_table": "dimcustomer",
+          "to_column": "customerkey",
+          "constraint_name": "fk_fos_customer"
+        },
+        {
+          "from_column": "datekey",
+          "to_table": "dimdate",
+          "to_column": "datekey",
+          "constraint_name": "fk_fos_date"
+        },
+        {
+          "from_column": "productkey",
+          "to_table": "dimproduct",
+          "to_column": "productkey",
+          "constraint_name": "fk_fos_product"
+        },
+        {
+          "from_column": "promotionkey",
+          "to_table": "dimpromotion",
+          "to_column": "promotionkey",
+          "constraint_name": "fk_fos_promotion"
+        },
+        {
+          "from_column": "storekey",
+          "to_table": "dimstore",
+          "to_column": "storekey",
+          "constraint_name": "fk_fos_store"
+        }
+      ],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 12627416
+    },
+    {
+      "name": "factsales",
+      "columns": [
+        {
+          "name": "saleskey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "datekey",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "channelkey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "storekey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productkey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "promotionkey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "currencykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "unitcost",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "unitprice",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesquantity",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "returnquantity",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "returnamount",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "discountquantity",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "discountamount",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "totalcost",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesamount",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [
+        {
+          "from_column": "channelkey",
+          "to_table": "dimchannel",
+          "to_column": "channelkey",
+          "constraint_name": "fk_fs_channel"
+        },
+        {
+          "from_column": "currencykey",
+          "to_table": "dimcurrency",
+          "to_column": "currencykey",
+          "constraint_name": "fk_fs_currency"
+        },
+        {
+          "from_column": "datekey",
+          "to_table": "dimdate",
+          "to_column": "datekey",
+          "constraint_name": "fk_fs_date"
+        },
+        {
+          "from_column": "productkey",
+          "to_table": "dimproduct",
+          "to_column": "productkey",
+          "constraint_name": "fk_fs_product"
+        },
+        {
+          "from_column": "promotionkey",
+          "to_table": "dimpromotion",
+          "to_column": "promotionkey",
+          "constraint_name": "fk_fs_promotion"
+        },
+        {
+          "from_column": "storekey",
+          "to_table": "dimstore",
+          "to_column": "storekey",
+          "constraint_name": "fk_fs_store"
+        }
+      ],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 3406173
+    },
+    {
+      "name": "factsalesquota",
+      "columns": [
+        {
+          "name": "salesquotakey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "channelkey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "storekey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "productkey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "datekey",
+          "data_type": "text",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "currencykey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "scenariokey",
+          "data_type": "bigint",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesquantityquota",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "salesamountquota",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        },
+        {
+          "name": "grossmarginquota",
+          "data_type": "double precision",
+          "is_nullable": true,
+          "is_primary_key": false,
+          "default": null,
+          "description": "",
+          "odoo_ttype": "",
+          "relation_model": ""
+        }
+      ],
+      "foreign_keys": [
+        {
+          "from_column": "channelkey",
+          "to_table": "dimchannel",
+          "to_column": "channelkey",
+          "constraint_name": "fk_fsq_channel"
+        },
+        {
+          "from_column": "currencykey",
+          "to_table": "dimcurrency",
+          "to_column": "currencykey",
+          "constraint_name": "fk_fsq_currency"
+        },
+        {
+          "from_column": "datekey",
+          "to_table": "dimdate",
+          "to_column": "datekey",
+          "constraint_name": "fk_fsq_date"
+        },
+        {
+          "from_column": "productkey",
+          "to_table": "dimproduct",
+          "to_column": "productkey",
+          "constraint_name": "fk_fsq_product"
+        },
+        {
+          "from_column": "storekey",
+          "to_table": "dimstore",
+          "to_column": "storekey",
+          "constraint_name": "fk_fsq_store"
+        }
+      ],
+      "odoo_model": "",
+      "odoo_description": "",
+      "row_count": 7465577
+    }
+  ],
+  "notes": {
+    "source": "PostgreSQL information_schema + Odoo ir_model_fields",
+    "odoo_model_count": "0",
+    "odoo_field_count": "0"
+  }
+}
