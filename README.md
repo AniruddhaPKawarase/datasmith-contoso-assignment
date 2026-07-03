@@ -2,12 +2,15 @@
 
 Conversational analyst for the **Cleaned Microsoft Contoso** star schema, submitted for the DatasmithAI Contoso Senior Engineer take-home. Ask a natural-language question, get generated SQL, a Postgres result set, and an auto-chosen chart / table / KPI card back — with an agent trace of every planner + executor step.
 
-**Live demo:** _`(URL added in Hour 10-11 after Vercel + Render deployment)`_
-**3-min walkthrough:** _`(Loom URL added in Hour 11-12)`_
+**Live demo:** https://scm-contoso.vercel.app
+**Live API:** https://scm-contoso-api.onrender.com/healthz
+**3-min walkthrough:** _`(Loom URL — added after recording)`_
+
+> **Live-stack smoke result (2026-07-03):** TC01 (line chart, 26 rows, 11 s) · TC02 (bar chart, 10 rows, 6 s) · TC06 funnel (3 panels, 78 rows, 16 s) · TC08 demographic (3 panels, 10 rows, 19 s). All pass end-to-end via Vercel → Render → Neon.
 
 ## What it does
 
-- **NL → validated SQL → live execution** against a Contoso Postgres database (12.6 M-row `factonlinesales`, 15 curated tables).
+- **NL → validated SQL → live execution** against a Contoso Postgres database (15 curated tables). Local dev runs against the full 12.6 M-row `factonlinesales`; the live demo runs against a 200 k-row 2009 slice — a Neon free-tier cap of 512 MB. Both share identical schema, planner, composer, and validator code paths.
 - **CSR-RAG-style dynamic schema injection** — no column names hard-coded in prompts; every request re-fetches the relevant table/column shapes and injects them into the composer.
 - **AmbiguityResolver + Router** — asks a clarifying question when the query is under-specified (e.g. "Show me sales" → "Do you mean revenue by month, region, or channel?").
 - **VizSelector** — a post-execution LLM step that picks the best format from `{line, bar, pie, kpi, table, mixed, prose}` and returns axis assignments.
